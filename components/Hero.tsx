@@ -34,7 +34,6 @@ const TABS = [
     label: "Course Builder",
     icon: LayoutDashboard,
     accent: "#7B4DB5",
-    caption: "Drag, drop, and structure lessons without touching code.",
     highlights: [
       "Reorder modules with drag-and-drop",
       "Drip content on a schedule",
@@ -161,12 +160,9 @@ export default function Hero() {
   };
 
   return (
-    <section
-      className="relative overflow-hidden min-h-screen"
-      style={{ backgroundColor: "#1E1C2F" }}
-    >
+    <section className="relative min-h-screen overflow-hidden bg-[#0a0612]">
       {/* light pillar background */}
-      <div className="h-full">
+      <div className="absolute inset-0 w-full h-full">
         <LightPillar
           topColor="#5227FF"
           bottomColor="#FF9FFC"

@@ -342,28 +342,45 @@ const LightPillar: React.FC<LightPillarProps> = ({
     };
     rafRef.current = requestAnimationFrame(animate);
 
-    // Handle resize with debouncing
+    // Handle resize with debouncing (covers both window resizes AND
+    // container size changes caused by layout shifts: fonts loading,
+    // tab panel height changing, images loading, TextType animating, etc.)
     let resizeTimeout: number | null = null;
-    const handleResize = () => {
+    const applyResize = (newWidth: number, newHeight: number) => {
       if (resizeTimeout) {
         clearTimeout(resizeTimeout);
       }
-
       resizeTimeout = window.setTimeout(() => {
-        if (!rendererRef.current || !materialRef.current || !containerRef.current) return;
-        const newWidth = containerRef.current.clientWidth;
-        const newHeight = containerRef.current.clientHeight;
+        if (!rendererRef.current || !materialRef.current) return;
+        if (newWidth === 0 || newHeight === 0) return;
         rendererRef.current.setSize(newWidth, newHeight);
         materialRef.current.uniforms.uResolution.value.set(newWidth, newHeight);
       }, 150);
     };
 
+    const handleResize = () => {
+      if (!containerRef.current) return;
+      applyResize(containerRef.current.clientWidth, containerRef.current.clientHeight);
+    };
+
     window.addEventListener('resize', handleResize, { passive: true });
+
+    // ResizeObserver catches content-driven layout changes that don't
+    // fire a window `resize` event — e.g. the hero growing taller once
+    // Satoshi/Jakarta fonts swap in, the tab image loads, or the caption
+    // text wraps differently per tab.
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        applyResize(Math.round(width), Math.round(height));
+      }
+    });
+    resizeObserver.observe(container);
 
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
-      if (interactive) {
+      resizeObserver.disconnect(); {
         container.removeEventListener('mousemove', handleMouseMove);
       }
       if (rafRef.current) {
