@@ -19,6 +19,11 @@ const COLS = 3;
 const BULGE = 170; // outward push at row turns — must clear the widest
 // rightmost-column text (see maxWidthRight below)
 const CORNER_RADIUS = 52;
+const MOBILE_ZIGZAG = 46; // how far the mobile connector bows left/right
+// between two vertically-stacked icons
+const MOBILE_CORNER_RADIUS = 16; // tighter than desktop's CORNER_RADIUS so
+// the zigzag reads as sharp jogs, not a
+// smooth wave
 
 const DEFAULT_ICONS: LucideIcon[] = [
   UserPlus,
@@ -50,14 +55,48 @@ function withBulges(points: Point[], rows: unknown[][], bulge: number): Point[] 
     }
     const isLastRow = rowIdx === rows.length - 1;
     if (!isLastRow) {
-      const lastPoint = points[idx - 1];
-      const nextPoint = points[idx];
-      const dir = rowIdx % 2 === 0 ? 1 : -1;
-      result.push({ x: lastPoint.x + dir * bulge, y: lastPoint.y });
-      result.push({
-        x: (nextPoint?.x ?? lastPoint.x) + dir * bulge,
-        y: nextPoint?.y ?? lastPoint.y,
-      });
+      const nextRow = rows[rowIdx + 1];
+      // Bulge waypoints assume the next row starts at the same edge x as
+      // this row ends (true for full rows, via the reversal trick). A
+      // shorter/centered row (e.g. a trailing single-item row) doesn't sit
+      // at that edge, so bulging toward it just zigzags. Connect straight
+      // to it instead.
+      const isNextRowPartial = nextRow.length < row.length;
+      if (!isNextRowPartial) {
+        const lastPoint = points[idx - 1];
+        const nextPoint = points[idx];
+        const dir = rowIdx % 2 === 0 ? 1 : -1;
+        result.push({ x: lastPoint.x + dir * bulge, y: lastPoint.y });
+        result.push({
+          x: (nextPoint?.x ?? lastPoint.x) + dir * bulge,
+          y: nextPoint?.y ?? lastPoint.y,
+        });
+      }
+    }
+  });
+  return result;
+}
+
+// Same list of points (all sharing one x, stacked by y — the mobile
+// icon column), but between every pair inserts a "drop → jog sideways →
+// drop → jog back" set of waypoints, alternating left/right each time.
+// Combined with roundedPath's corner rounding this reads as a boxy
+// zigzag (straight vertical drops, sharp sideways jogs) rather than one
+// smooth continuous wave, while still passing exactly through every
+// icon's center.
+function withZigzag(points: Point[], amplitude: number): Point[] {
+  const result: Point[] = [];
+  points.forEach((point, idx) => {
+    result.push(point);
+    const next = points[idx + 1];
+    if (next) {
+      const dir = idx % 2 === 0 ? 1 : -1;
+      const y1 = point.y + (next.y - point.y) * 0.28;
+      const y2 = point.y + (next.y - point.y) * 0.72;
+      result.push({ x: point.x, y: y1 });
+      result.push({ x: point.x + dir * amplitude, y: y1 });
+      result.push({ x: point.x + dir * amplitude, y: y2 });
+      result.push({ x: point.x, y: y2 });
     }
   });
   return result;
@@ -95,6 +134,11 @@ export default function EcosystemPipeline() {
   const [pathD, setPathD] = useState("");
   const [svgSize, setSvgSize] = useState({ width: 0, height: 0 });
 
+  const mobileContainerRef = useRef<HTMLDivElement>(null);
+  const mobileNodeRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [mobilePathD, setMobilePathD] = useState("");
+  const [mobileSvgSize, setMobileSvgSize] = useState({ width: 0, height: 0 });
+
   const rows = chunk(pipeline as PipelineItem[], COLS);
 
   useLayoutEffect(() => {
@@ -116,6 +160,40 @@ export default function EcosystemPipeline() {
         setPathD(roundedPath(withBulges(points, rows, BULGE)));
       }
       setSvgSize({ width: containerRect.width, height: containerRect.height });
+    };
+
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(container);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useLayoutEffect(() => {
+    const container = mobileContainerRef.current;
+    if (!container) return;
+
+    const measure = () => {
+      const containerRect = container.getBoundingClientRect();
+      const points: Point[] = mobileNodeRefs.current
+        .filter((el): el is HTMLDivElement => !!el)
+        .map((el) => {
+          const r = el.getBoundingClientRect();
+          return {
+            x: r.left - containerRect.left + r.width / 2,
+            y: r.top - containerRect.top + r.height / 2,
+          };
+        });
+      if (points.length > 1) {
+        setMobilePathD(
+          roundedPath(withZigzag(points, MOBILE_ZIGZAG), MOBILE_CORNER_RADIUS)
+        );
+      }
+      setMobileSvgSize({ width: containerRect.width, height: containerRect.height });
     };
 
     measure();
@@ -210,16 +288,14 @@ export default function EcosystemPipeline() {
             {rows.map((row, rowIndex) => {
               const isReversed = rowIndex % 2 === 1;
               const flatIndex = rowIndex * COLS;
-              const isPartialRow = row.length < COLS;
-              // For a short row (e.g. the trailing single-item row), offset
-              // its starting grid column so it lands centered within the
-              // same COLS-track grid every other row uses — e.g. a lone
-              // item in a 3-col grid starts at column 2, putting it exactly
-              // on the middle column's x-position (verified: middle column
-              // center == midpoint of outer columns), not an approximation
-              // via flexbox. This is what keeps the connector line's curve
-              // landing precisely on the node instead of overshooting.
-              const startCol = Math.floor((COLS - row.length) / 2);
+              // A short trailing row (e.g. a lone final item) should sit
+              // under whichever column the row above ends on — here that's
+              // always the rightmost column, since rows render in normal
+              // reading order and the connector simply drops from the last
+              // node of the row above. Right-aligning it (instead of true
+              // centering) makes that drop a straight vertical line instead
+              // of a diagonal, since the node's x now matches exactly.
+              const startCol = COLS - row.length;
               // Explicit reversal instead of CSS `direction: rtl` — guaranteed
               // to actually flip visual order, which is what the bulge math
               // (and therefore the "no overlap" guarantee) depends on.
@@ -238,18 +314,16 @@ export default function EcosystemPipeline() {
                     // bulge travels toward (see explanation above the
                     // component) — cap its text width so it can never reach
                     // into the bulge's path, regardless of copy length.
-                    const isRightmost = physicalCol === COLS - 1;
+                    // Uses the actual grid column (startCol + physicalCol),
+                    // not just physicalCol, so this still holds for a
+                    // right-aligned partial row.
+                    const isRightmost = startCol + physicalCol === COLS - 1;
 
                     return (
                       <div
                         key={step.title}
                         style={{ gridColumnStart: startCol + physicalCol + 1 }}
-                        className={
-                          "relative flex flex-col gap-4" +
-                          (isPartialRow
-                            ? " items-center text-center"
-                            : " items-start")
-                        }
+                        className="relative flex flex-col items-start gap-4"
                       >
                         <div
                           ref={(el) => {
@@ -260,13 +334,7 @@ export default function EcosystemPipeline() {
                           <Icon className="h-5 w-5 text-lilac" strokeWidth={1.8} />
                         </div>
                         <div
-                          className={
-                            isPartialRow
-                              ? "max-w-[220px] mx-auto"
-                              : isRightmost
-                                ? "max-w-[160px]"
-                                : "max-w-[85%]"
-                          }
+                          className={isRightmost ? "max-w-[160px]" : "max-w-[85%]"}
                         >
                           <h3 className="font-display text-lg text-cream">
                             {step.title}
@@ -284,26 +352,103 @@ export default function EcosystemPipeline() {
           </div>
         </div>
 
-        {/* mobile: simple vertical line, icons instead of numbers */}
-        <div className="md:hidden mt-16 relative max-w-3xl">
-          <div className="absolute left-[15px] top-2 bottom-2 w-[3px] rounded-full bg-gradient-to-b from-violet via-plum to-vodka/40 overflow-hidden">
-            <div className="absolute inset-0 mobile-pipeline-flow" />
-          </div>
-          <span className="mobile-pipeline-comet" style={{ animationDelay: "0s" }} />
-          <span className="mobile-pipeline-comet" style={{ animationDelay: "-1.3s" }} />
-          <span className="mobile-pipeline-comet" style={{ animationDelay: "-2.6s" }} />
-          <div className="space-y-10">
+        {/* mobile: icons stacked in a centered column, connector zigzags
+            side to side between them instead of running straight down */}
+        <div
+          ref={mobileContainerRef}
+          className="md:hidden mt-16 relative max-w-xs mx-auto"
+        >
+          <svg
+            className="absolute inset-0 pointer-events-none overflow-visible"
+            width={mobileSvgSize.width}
+            height={mobileSvgSize.height}
+          >
+            <defs>
+              <linearGradient
+                id="mobilePipelineGradient"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2={mobileSvgSize.height}
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop offset="0%" stopColor="#7B4DB5" />
+                <stop offset="55%" stopColor="#5D2E8C" />
+                <stop offset="100%" stopColor="#3FA98A" />
+              </linearGradient>
+            </defs>
+
+            {mobilePathD && (
+              <>
+                <path
+                  d={mobilePathD}
+                  fill="none"
+                  stroke="url(#mobilePipelineGradient)"
+                  strokeWidth={20}
+                  strokeLinecap="round"
+                  opacity={0.15}
+                  style={{ filter: "blur(8px)" }}
+                />
+                <path
+                  d={mobilePathD}
+                  fill="none"
+                  stroke="url(#mobilePipelineGradient)"
+                  strokeWidth={9}
+                  strokeLinecap="round"
+                />
+                <path
+                  d={mobilePathD}
+                  fill="none"
+                  stroke="#F1E9FA"
+                  strokeOpacity={0.5}
+                  strokeWidth={2.5}
+                  strokeLinecap="round"
+                  strokeDasharray="2 20"
+                  className="pipeline-flow"
+                />
+              </>
+            )}
+          </svg>
+
+          {mobilePathD && (
+            <>
+              <span
+                className="mobile-pipeline-comet"
+                style={{ offsetPath: `path("${mobilePathD}")`, animationDelay: "0s" }}
+              />
+              <span
+                className="mobile-pipeline-comet"
+                style={{ offsetPath: `path("${mobilePathD}")`, animationDelay: "-1.3s" }}
+              />
+              <span
+                className="mobile-pipeline-comet"
+                style={{ offsetPath: `path("${mobilePathD}")`, animationDelay: "-2.6s" }}
+              />
+            </>
+          )}
+
+          <div className="flex flex-col items-center gap-14">
             {(pipeline as PipelineItem[]).map((step, i) => {
               const Icon = step.icon ?? DEFAULT_ICONS[i % DEFAULT_ICONS.length];
               return (
-                <div key={step.title} className="relative pl-12">
-                  <span className="absolute left-0 top-0.5 h-8 w-8 rounded-full bg-ink-soft border border-violet/50 flex items-center justify-center">
-                    <Icon className="h-3.5 w-3.5 text-lilac" strokeWidth={1.8} />
-                  </span>
-                  <h3 className="font-display text-xl text-cream">{step.title}</h3>
-                  <p className="mt-1.5 text-sm text-mist/55 leading-relaxed max-w-lg">
-                    {step.body}
-                  </p>
+                <div
+                  key={step.title}
+                  className="relative z-10 flex flex-col items-center text-center gap-3"
+                >
+                  <div
+                    ref={(el) => {
+                      mobileNodeRefs.current[i] = el;
+                    }}
+                    className="h-12 w-12 rounded-full bg-ink-soft border border-violet/50 flex items-center justify-center shrink-0 shadow-[0_0_0_6px_rgba(20,14,30,1)]"
+                  >
+                    <Icon className="h-5 w-5 text-lilac" strokeWidth={1.8} />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-xl text-cream">{step.title}</h3>
+                    <p className="mt-1.5 text-sm text-mist/55 leading-relaxed">
+                      {step.body}
+                    </p>
+                  </div>
                 </div>
               );
             })}
@@ -364,30 +509,14 @@ export default function EcosystemPipeline() {
           }
         }
 
-        /* mobile: same dash-flow + comet treatment as desktop, adapted to a
-           straight vertical line instead of an offset-path */
-        .mobile-pipeline-flow {
-          background: repeating-linear-gradient(
-            to bottom,
-            rgba(241, 233, 250, 0.5) 0px,
-            rgba(241, 233, 250, 0.5) 2px,
-            transparent 2px,
-            transparent 26px
-          );
-          animation: mobilePipelineFlow 3s linear infinite;
-        }
-        @keyframes mobilePipelineFlow {
-          to {
-            transform: translateY(26px);
-          }
-        }
-
+        /* mobile: comet travels along the zigzag connector path, same
+           easing as the desktop comet */
         .mobile-pipeline-comet {
           position: absolute;
-          left: 9px;
           top: 0;
-          width: 12px;
-          height: 12px;
+          left: 0;
+          width: 10px;
+          height: 10px;
           border-radius: 9999px;
           background: radial-gradient(
             circle,
@@ -395,30 +524,14 @@ export default function EcosystemPipeline() {
             #f1e9fa 45%,
             transparent 75%
           );
-          box-shadow: 0 0 18px 5px rgba(241, 233, 250, 0.75);
-          animation: mobileCometMove 4s linear infinite;
-        }
-        @keyframes mobileCometMove {
-          from {
-            top: 0%;
-            opacity: 0;
-          }
-          5% {
-            opacity: 1;
-          }
-          95% {
-            opacity: 1;
-          }
-          to {
-            top: 100%;
-            opacity: 0;
-          }
+          box-shadow: 0 0 16px 4px rgba(241, 233, 250, 0.75);
+          offset-rotate: 0deg;
+          animation: cometMove 4s linear infinite;
         }
 
         @media (prefers-reduced-motion: reduce) {
           .pipeline-flow,
           .pipeline-comet,
-          .mobile-pipeline-flow,
           .mobile-pipeline-comet {
             animation: none;
           }
