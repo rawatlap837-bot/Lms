@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, LayoutDashboard, Users, Video, BarChart3, Check } from "lucide-react";
+import {
+  ArrowUpRight,
+  LayoutDashboard,
+  Users,
+  Video,
+  BarChart3,
+  Check,
+  Image as ImageIcon,
+} from "lucide-react";
 import TextType from "../Animation/TextType";
 import LightPillar from "../Animation/LightPillar";
 
@@ -17,7 +25,8 @@ import LightPillar from "../Animation/LightPillar";
 // ---------------------------------------------------------------------------
 // EDIT ME: rename tabs, swap captions/highlights, and point `image` at your
 // screenshots. Drop screenshots in /public/screenshots/ and update the paths.
-// `accent` tints that tab's pill glow, panel border, and bullet checks.
+// Until a real screenshot exists at that path, the panel shows a placeholder
+// instead of a blank box, so it never looks broken during development.
 // ---------------------------------------------------------------------------
 const TABS = [
   {
@@ -110,6 +119,11 @@ export default function Hero() {
 
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+  const [imgError, setImgError] = useState(false);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [active]);
 
   useEffect(() => {
     const el = tabRefs.current[activeIndex];
@@ -127,23 +141,42 @@ export default function Hero() {
     return () => window.removeEventListener("resize", handleResize);
   }, [activeIndex]);
 
+  const selectTab = (index: number) => {
+    const nextIndex = (index + TABS.length) % TABS.length;
+    setActive(TABS[nextIndex].id);
+    tabRefs.current[nextIndex]?.focus();
+  };
+
+  const handleTabKeyDown = (
+    e: React.KeyboardEvent<HTMLButtonElement>,
+    index: number
+  ) => {
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      selectTab(index + 1);
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      selectTab(index - 1);
+    }
+  };
+
   return (
     <section
-      className="relative overflow-hidden"
+      className="relative overflow-hidden min-h-screen"
       style={{ backgroundColor: "#1E1C2F" }}
     >
       {/* light pillar background */}
-      <div className="absolute inset-0">
+      <div className="h-full">
         <LightPillar
           topColor="#5227FF"
           bottomColor="#FF9FFC"
           intensity={1}
           rotationSpeed={0.3}
-          glowAmount={0.002}
+          glowAmount={0.003}
           pillarWidth={3}
           pillarHeight={0.4}
-          noiseIntensity={0.5}
-          pillarRotation={25}
+          noiseIntensity={0.01}
+          pillarRotation={50}
           interactive={false}
           mixBlendMode="screen"
           quality="high"
@@ -170,32 +203,19 @@ export default function Hero() {
 
       {/* fade to next section's background at the bottom */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
+        className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none"
         style={{
           background: "linear-gradient(to bottom, transparent, #1E1C2F)",
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto px-6 md:px-10 pt-32 pb-0 md:pt-40 md:pb-0 text-center">
-        {mounted && (
-          <TextType
-            as="p"
-            className="font-mono text-xs tracking-[0.3em] uppercase mb-8"
-            text={[
-              "Custom LMS Development",
-              "Built For Course Creators",
-              "Scalable. Branded. Yours.",
-            ]}
-            typingSpeed={55}
-            deletingSpeed={30}
-            pauseDuration={1800}
-            loop
-            showCursor
-            cursorCharacter="_"
-            cursorBlinkDuration={0.5}
-            style={{ color: "#B89ADC" }}
-          />
-        )}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-10 pt-24 sm:pt-32 md:pt-40 pb-10 md:pb-14 text-center">
+        <div
+          className="font-mono text-[10px] sm:text-xs tracking-[0.25em] sm:tracking-[0.3em] uppercase mb-4 sm:mb-5"
+          style={{ color: "#F1E9FA" }}
+        >
+          Custom LMS Development
+        </div>
 
         <h1
           style={{
@@ -203,7 +223,7 @@ export default function Hero() {
             transformOrigin: "top center",
             color: "#F1E9FA",
           }}
-          className={`font-display text-5xl sm:text-6xl md:text-7xl lg:text-7xl leading-[1.05] text-balance transition-all duration-75 will-change-transform ${mounted ? "opacity-100" : "opacity-0"
+          className={`font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] sm:leading-[1.05] text-balance transition-all duration-75 will-change-transform ${mounted ? "opacity-100" : "opacity-0"
             }`}
         >
           Turn Your Learning Business
@@ -215,9 +235,9 @@ export default function Hero() {
           {mounted && (
             <TextType
               as="div"
-              className="!mt-2 font-display italic"
+              className="!mt-1 sm:!mt-2 font-display italic"
               style={{
-                fontSize: "clamp(2.5rem, 7vw, 5.5rem)",
+                fontSize: "clamp(2rem, 9vw, 5.5rem)",
                 lineHeight: 1.05,
                 fontWeight: 700,
               }}
@@ -236,54 +256,41 @@ export default function Hero() {
         </div>
 
         <p
-          className={`mt-10 text-sm md:text-base tracking-wide uppercase font-mono transition-all duration-700 delay-150 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+          className={`mt-7 sm:mt-10 text-xs sm:text-base tracking-wide uppercase font-mono transition-all duration-700 delay-150 px-2 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
             }`}
-          style={{ color: "rgba(184,154,220,0.6)" }}
+          style={{ color: "white" }}
         >
           One Platform{" "}
-          <span style={{ color: "rgba(184,154,220,0.4)" }} className="mx-2">|</span>{" "}
+          <span style={{ color: "rgba(184,154,220,0.4)" }} className="mx-1 sm:mx-2">|</span>{" "}
           Complete Control{" "}
-          <span style={{ color: "rgba(184,154,220,0.4)" }} className="mx-2">|</span>{" "}
+          <span style={{ color: "rgba(184,154,220,0.4)" }} className="mx-1 sm:mx-2">|</span>{" "}
           Built Around Your Business
         </p>
 
         <div
-          className={`mt-6 text-lg max-w-2xl mx-auto leading-relaxed transition-all duration-700 delay-200 flex gap-4 justify-center ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+          className={`mt-6 max-w-md sm:max-w-2xl mx-auto transition-all duration-700 delay-200 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
             }`}
         >
           <a
             href="#consultation"
-            className="group inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5"
-            style={{
-              backgroundColor: "#5D2E8C",
-              color: "#F1E9FA",
-              boxShadow: "0 8px 30px rgba(93,46,140,0.45)",
-            }}
-            onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.backgroundColor = "#6a35a1" }}
-            onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.backgroundColor = "#5D2E8C" }}
+            className="group inline-flex items-center justify-center gap-2 rounded-full w-full sm:w-auto px-6 py-3.5 sm:px-8 sm:py-4 text-sm font-semibold text-[#F1E9FA] bg-[#5D2E8C] shadow-[0_8px_30px_rgba(93,46,140,0.45)] transition-all duration-200 hover:bg-[#6a35a1] hover:-translate-y-0.5 hover:shadow-[0_10px_36px_rgba(93,46,140,0.55)] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B89ADC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1E1C2F]"
           >
             Book Your Free Consultation
-            <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            <ArrowUpRight className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
 
           <a
             href="#ecosystem"
-            className="inline-flex items-center gap-2 rounded-full border px-8 py-4 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5"
-            style={{
-              borderColor: "rgba(184,154,220,0.25)",
-              color: "rgba(241,233,250,0.9)",
-            }}
-            onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.borderColor = "rgba(184,154,220,0.5)" }}
-            onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.borderColor = "rgba(184,154,220,0.25)" }}
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-[rgba(255,255,255,0.4)] w-full sm:w-auto px-6 py-3.5 sm:px-8 sm:py-4 text-sm font-semibold text-[rgba(241,233,250,0.9)] transition-all duration-200 hover:border-[rgba(184,154,220,0.7)] hover:bg-[rgba(184,154,220,0.08)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B89ADC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1E1C2F]"
           >
             See How It Works
           </a>
         </div>
 
         <p
-          className={`mt-10 font-display italic text-sm transition-all duration-700 delay-500 ${mounted ? "opacity-100" : "opacity-0"
+          className={`mt-5 font-display italic text-xs sm:text-sm transition-all duration-700 delay-500 ${mounted ? "opacity-100" : "opacity-0"
             }`}
-          style={{ color: "rgba(184,154,220,0.7)" }}
+          style={{ color: "rgba(227, 227, 227, 0.8)" }}
         >
           Custom-built for your workflow. Designed for your growth.
         </p>
@@ -291,11 +298,13 @@ export default function Hero() {
         {/* ---------------------------------------------------------------- */}
         {/* Product tabs — sits inside the hero section, under the CTAs     */}
         {/* ---------------------------------------------------------------- */}
-        <div className="mt-24 md:mt-28">
-          {/* tab pills with sliding indicator */}
+        <div className="mt-5 md:mt-5">
+          {/* tab pills with sliding indicator — horizontally scrollable on mobile */}
           <div className="flex justify-center">
             <div
-              className="relative inline-flex flex-wrap justify-center gap-1 rounded-full p-1.5"
+              role="tablist"
+              aria-label="Platform features"
+              className="no-scrollbar relative inline-flex max-w-full items-center gap-1 overflow-x-auto rounded-full p-1.5"
               style={{
                 backgroundColor: "rgba(43,27,61,0.6)",
                 border: "1px solid rgba(184,154,220,0.15)",
@@ -320,13 +329,23 @@ export default function Hero() {
                     ref={(el) => {
                       tabRefs.current[i] = el;
                     }}
+                    role="tab"
+                    id={`tab-${tab.id}`}
+                    aria-selected={isActive}
+                    aria-controls={`panel-${tab.id}`}
+                    tabIndex={isActive ? 0 : -1}
                     onClick={() => setActive(tab.id)}
-                    className="relative z-10 flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-colors duration-300"
-                    style={{
-                      color: isActive ? "#F1E9FA" : "rgba(184,154,220,0.65)",
-                    }}
+                    onKeyDown={(e) => handleTabKeyDown(e, i)}
+                    className="relative z-10 flex shrink-0 items-center gap-1.5 sm:gap-2 whitespace-nowrap rounded-full px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-medium transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                    style={
+                      {
+                        color: isActive ? "#F1E9FA" : "rgba(184,154,220,0.65)",
+                        "--tw-ring-color": activeTab.accent,
+                        "--tw-ring-offset-color": "#1E1C2F",
+                      } as React.CSSProperties
+                    }
                   >
-                    <Icon className="h-4 w-4" />
+                    <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
                     {tab.label}
                   </button>
                 );
@@ -335,7 +354,7 @@ export default function Hero() {
           </div>
 
           {/* framed screenshot panel */}
-          <div className="mt-10 relative">
+          <div className="mt-8 sm:mt-10 relative">
             <div
               className="absolute -inset-4 rounded-3xl blur-2xl opacity-50 pointer-events-none transition-colors duration-500"
               style={{
@@ -343,6 +362,9 @@ export default function Hero() {
               }}
             />
             <div
+              role="tabpanel"
+              id={`panel-${activeTab.id}`}
+              aria-labelledby={`tab-${activeTab.id}`}
               className="relative rounded-2xl overflow-hidden transition-colors duration-500 text-left"
               style={{
                 border: `1px solid ${activeTab.accent}40`,
@@ -352,37 +374,62 @@ export default function Hero() {
             >
               {/* window chrome */}
               <div
-                className="flex items-center gap-2 px-4 py-3"
+                className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3"
                 style={{ borderBottom: "1px solid rgba(184,154,220,0.1)" }}
               >
-                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "#7B4DB5" }} />
-                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "#5D2E8C" }} />
-                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "#45225F" }} />
-                <span className="ml-3 text-xs font-mono" style={{ color: "rgba(184,154,220,0.5)" }}>
+                <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full shrink-0" style={{ backgroundColor: "#7B4DB5" }} />
+                <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full shrink-0" style={{ backgroundColor: "#5D2E8C" }} />
+                <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full shrink-0" style={{ backgroundColor: "#45225F" }} />
+                <span
+                  className="ml-2 sm:ml-3 text-[10px] sm:text-xs font-mono truncate"
+                  style={{ color: "rgba(184,154,220,0.5)" }}
+                >
                   yourlms.com/{activeTab.id}
                 </span>
               </div>
 
-              {/* screenshot, scale+fade on tab change */}
+              {/* screenshot, scale+fade on tab change, with a placeholder if missing */}
               <div key={activeTab.id} className="relative aspect-[16/9] panel-in">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={activeTab.image}
-                  alt={activeTab.label}
-                  className="w-full h-full object-cover"
-                />
+                {imgError ? (
+                  <div
+                    className="w-full h-full flex flex-col items-center justify-center gap-3 px-6 text-center"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, rgba(93,46,140,0.15), rgba(43,27,61,0.4))",
+                    }}
+                  >
+                    <ImageIcon
+                      className="h-7 w-7 sm:h-8 sm:w-8"
+                      style={{ color: "rgba(184,154,220,0.4)" }}
+                    />
+                    <span
+                      className="text-[10px] sm:text-xs font-mono"
+                      style={{ color: "rgba(184,154,220,0.45)" }}
+                    >
+                      Add your screenshot at {activeTab.image}
+                    </span>
+                  </div>
+                ) : (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={activeTab.image}
+                    alt={activeTab.label}
+                    onError={() => setImgError(true)}
+                    className="w-full h-full object-cover"
+                  />
+                )}
               </div>
             </div>
 
             {/* feature highlights */}
             <div
               key={activeTab.id + "-highlights"}
-              className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 panel-in text-left"
+              className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 panel-in text-left"
             >
               {activeTab.highlights.map((h) => (
                 <div
                   key={h}
-                  className="flex items-start gap-2 rounded-xl px-4 py-3 text-sm"
+                  className="flex items-start gap-2 rounded-xl px-3.5 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm"
                   style={{
                     backgroundColor: "rgba(43,27,61,0.5)",
                     border: "1px solid rgba(184,154,220,0.1)",
@@ -399,7 +446,7 @@ export default function Hero() {
           {/* caption */}
           <p
             key={activeTab.id + "-caption"}
-            className="mt-6 text-center text-sm md:text-base panel-in"
+            className="mt-5 sm:mt-6 text-center text-xs sm:text-base px-4 panel-in"
             style={{ color: "rgba(184,154,220,0.7)" }}
           >
             {activeTab.caption}
@@ -420,6 +467,13 @@ export default function Hero() {
         }
         .panel-in {
           animation: panelIn 0.35s ease;
+        }
+        .no-scrollbar {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
         }
         @media (prefers-reduced-motion: reduce) {
           .panel-in {
