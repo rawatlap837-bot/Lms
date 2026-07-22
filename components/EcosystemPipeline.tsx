@@ -19,7 +19,7 @@ const COLS = 3;
 const BULGE = 170; // outward push at row turns — must clear the widest
 // rightmost-column text (see maxWidthRight below)
 const CORNER_RADIUS = 52;
-const MOBILE_ZIGZAG = 46; // how far the mobile connector bows left/right
+const MOBILE_ZIGZAG = 170; // how far the mobile connector bows left/right
 // between two vertically-stacked icons
 const MOBILE_CORNER_RADIUS = 16; // tighter than desktop's CORNER_RADIUS so
 // the zigzag reads as sharp jogs, not a
@@ -91,8 +91,8 @@ function withZigzag(points: Point[], amplitude: number): Point[] {
     const next = points[idx + 1];
     if (next) {
       const dir = idx % 2 === 0 ? 1 : -1;
-      const y1 = point.y + (next.y - point.y) * 0.28;
-      const y2 = point.y + (next.y - point.y) * 0.72;
+      const y1 = point.y + (next.y - point.y) * 0.20;
+      const y2 = point.y + (next.y - point.y) * 0.80;
       result.push({ x: point.x, y: y1 });
       result.push({ x: point.x + dir * amplitude, y: y1 });
       result.push({ x: point.x + dir * amplitude, y: y2 });
@@ -284,7 +284,7 @@ export default function EcosystemPipeline() {
             </>
           )}
 
-          <div className="flex flex-col gap-24">
+          <div className="flex flex-col gap-10">
             {rows.map((row, rowIndex) => {
               const isReversed = rowIndex % 2 === 1;
               const flatIndex = rowIndex * COLS;
@@ -302,7 +302,7 @@ export default function EcosystemPipeline() {
               const renderedRow = isReversed ? [...row].reverse() : row;
 
               return (
-                <div key={rowIndex} className="grid grid-cols-3 gap-8">
+                <div key={rowIndex} className="grid grid-cols-3 gap-3">
                   {renderedRow.map((step, physicalCol) => {
                     const originalCol = isReversed
                       ? row.length - 1 - physicalCol
@@ -356,7 +356,7 @@ export default function EcosystemPipeline() {
             side to side between them instead of running straight down */}
         <div
           ref={mobileContainerRef}
-          className="md:hidden mt-16 relative max-w-xs mx-auto"
+          className="md:hidden mt-10 relative max-w-xs mx-auto"
         >
           <svg
             className="absolute inset-0 pointer-events-none overflow-visible"
@@ -427,13 +427,13 @@ export default function EcosystemPipeline() {
             </>
           )}
 
-          <div className="flex flex-col items-center gap-14">
+          <div className="flex flex-col items-center gap-12">
             {(pipeline as PipelineItem[]).map((step, i) => {
               const Icon = step.icon ?? DEFAULT_ICONS[i % DEFAULT_ICONS.length];
               return (
                 <div
                   key={step.title}
-                  className="relative z-10 flex flex-col items-center text-center gap-3"
+                  className="relative z-10 flex flex-col items-center text-center gap-14"
                 >
                   <div
                     ref={(el) => {
