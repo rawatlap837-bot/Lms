@@ -4,15 +4,20 @@ import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   LayoutDashboard,
+  Settings,
   Users,
-  Video,
+  TrendingUp,
   BarChart3,
-  Check,
   Image as ImageIcon,
+  MessageCircle,
+  FileSpreadsheet,
+  HardDrive,
 } from "lucide-react";
 import TextType from "../Animation/TextType";
 import LightPillar from "../Animation/LightPillar";
-
+import excel from "../app/ICONS/excel.svg"
+import googlesheet from "../app/ICONS/googlesheet.svg"
+import whatsapp from "../app/ICONS/whatsapp.svg"
 // Palette reference (from provided swatch):
 // 01 Royal Purple    #2B1B3D
 // 02 Deep Violet     #45225F
@@ -23,64 +28,61 @@ import LightPillar from "../Animation/LightPillar";
 // 09 Pastel Purple   #F1E9FA
 
 // ---------------------------------------------------------------------------
-// EDIT ME: rename tabs, swap captions/highlights, and point `image` at your
-// screenshots. Drop screenshots in /public/screenshots/ and update the paths.
-// Until a real screenshot exists at that path, the panel shows a placeholder
-// instead of a blank box, so it never looks broken during development.
+// EDIT ME: rename tabs, and point `image` at your screenshots. Drop
+// screenshots in /public/screenshots/ and update the paths. Until a real
+// screenshot exists at that path, the panel shows a placeholder instead of a
+// blank box, so it never looks broken during development.
 // ---------------------------------------------------------------------------
 const TABS = [
   {
-    id: "builder",
-    label: "Course Builder",
+    id: "website",
+    label: "Website",
     icon: LayoutDashboard,
     accent: "#7B4DB5",
-    highlights: [
-      "Reorder modules with drag-and-drop",
-      "Drip content on a schedule",
-      "Preview as a student, instantly",
-    ],
-    image: "/screenshots/course-builder.png",
+    image: "/screenshots/website.png",
   },
   {
-    id: "students",
-    label: "Student Progress",
-    icon: Users,
+    id: "admin",
+    label: "Admin Panel",
+    icon: Settings,
     accent: "#5D2E8C",
-    caption: "See exactly who's stuck, who's thriving, and why.",
-    highlights: [
-      "Per-student completion tracking",
-      "Flag at-risk learners automatically",
-      "Export progress reports in one click",
-    ],
-    image: "/screenshots/student-progress.png",
+    image: "/screenshots/admin-panel.png",
   },
   {
-    id: "live",
-    label: "Live Classes",
-    icon: Video,
+    id: "user",
+    label: "User Panel",
+    icon: Users,
     accent: "#45225F",
-    caption: "Host cohort calls and replays inside your own platform.",
-    highlights: [
-      "Built-in scheduling and reminders",
-      "Auto-recorded replays for every session",
-      "No Zoom links or third-party logins",
-    ],
-    image: "/screenshots/live-classes.png",
+    image: "/screenshots/user-panel.png",
+  },
+  {
+    id: "progress",
+    label: "Student Progress",
+    icon: TrendingUp,
+    accent: "#B89ADC",
+    image: "/screenshots/student-progress.png",
   },
   {
     id: "analytics",
     label: "Analytics",
     icon: BarChart3,
-    accent: "#B89ADC",
-    caption: "Revenue, completion, and engagement — one dashboard.",
-    highlights: [
-      "Revenue by course and cohort",
-      "Engagement trends over time",
-      "One view, no spreadsheet exports",
-    ],
+    accent: "#D6C1E8",
     image: "/screenshots/analytics.png",
   },
 ];
+
+// The scattered tools this platform replaces — shown in the pain-point bar.
+// The scattered tools this platform replaces — shown in the pain-point bar.
+const PAIN_POINTS = [
+  { id: "whatsapp", label: "", src: whatsapp.src },
+  { id: "excel", label: "", src: excel.src },
+  { id: "drive", label: "", src: googlesheet.src },
+];
+
+// How long each tab stays active before auto-advancing to the next one.
+// Kept in one place so the pill bar's progress-bar animation duration
+// (see .progress-bar below) can be matched to it exactly.
+const AUTO_ADVANCE_MS = 4000;
 
 export default function Hero() {
   const [scale, setScale] = useState(1);
@@ -120,6 +122,35 @@ export default function Hero() {
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
   const [imgError, setImgError] = useState(false);
 
+  // Auto-advance timer. Kept in a ref (not state) so starting/restarting it
+  // doesn't itself trigger a re-render, and so a manual click can cleanly
+  // reset the countdown instead of fighting with the running interval.
+  const autoAdvanceRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startAutoAdvance = () => {
+    if (autoAdvanceRef.current) clearInterval(autoAdvanceRef.current);
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
+    autoAdvanceRef.current = setInterval(() => {
+      setActive((prev) => {
+        const idx = TABS.findIndex((t) => t.id === prev);
+        return TABS[(idx + 1) % TABS.length].id;
+      });
+    }, AUTO_ADVANCE_MS);
+  };
+
+  // Kick off auto-advance on mount; clean up on unmount.
+  useEffect(() => {
+    startAutoAdvance();
+    return () => {
+      if (autoAdvanceRef.current) clearInterval(autoAdvanceRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     setImgError(false);
   }, [active]);
@@ -128,6 +159,26 @@ export default function Hero() {
     const el = tabRefs.current[activeIndex];
     if (el) {
       setIndicator({ left: el.offsetLeft, width: el.offsetWidth });
+      // Keep the active pill visible inside its own horizontally-scrolling
+      // bar only — never scroll the page itself. Using scrollIntoView here
+      // previously dragged the whole viewport back up to the hero section
+      // every time auto-advance changed tabs, even if the person had
+      // scrolled away to read another section.
+      const container = el.parentElement;
+      if (container) {
+        const elLeft = el.offsetLeft;
+        const elRight = elLeft + el.offsetWidth;
+        const visibleLeft = container.scrollLeft;
+        const visibleRight = visibleLeft + container.clientWidth;
+        if (elLeft < visibleLeft) {
+          container.scrollTo({ left: elLeft - 12, behavior: "smooth" });
+        } else if (elRight > visibleRight) {
+          container.scrollTo({
+            left: elRight - container.clientWidth + 12,
+            behavior: "smooth",
+          });
+        }
+      }
     }
   }, [activeIndex]);
 
@@ -140,10 +191,19 @@ export default function Hero() {
     return () => window.removeEventListener("resize", handleResize);
   }, [activeIndex]);
 
+  // Any manual interaction (click or arrow-key nav) resets the auto-advance
+  // countdown, so the tab the person just picked gets its full dwell time
+  // instead of jumping away a moment later.
   const selectTab = (index: number) => {
     const nextIndex = (index + TABS.length) % TABS.length;
     setActive(TABS[nextIndex].id);
     tabRefs.current[nextIndex]?.focus();
+    startAutoAdvance();
+  };
+
+  const selectTabManually = (id: string) => {
+    setActive(id);
+    startAutoAdvance();
   };
 
   const handleTabKeyDown = (
@@ -206,35 +266,91 @@ export default function Hero() {
       />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-10 pt-24 sm:pt-32 md:pt-40 pb-10 md:pb-14 text-center">
+        {/* pain-point bar: the scattered tools this platform replaces */}
         <div
-          className="font-mono text-[10px] sm:text-xs tracking-[0.25em] sm:tracking-[0.3em] uppercase mb-4 sm:mb-5"
-          style={{ color: "#F1E9FA" }}
+          className={`flex flex-wrap items-center justify-center gap-x-2 gap-y-2 mb-6 sm:mb-8 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+            }`}
         >
-          Custom LMS Development
+          <span
+            className="font-mono text-[18px] sm:text-[20px] tracking-[0.2em] uppercase"
+            style={{ color: "rgba(241,233,250,0.6)" }}
+          >
+            Stop Managing Students On
+          </span>
+
+          {PAIN_POINTS.map((point) => (
+            <span
+              key={point.id}
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] sm:text-xs font-medium"
+              style={{
+                color: "#F1E9FA",
+                backgroundColor: "rgba(241,233,250,0.06)",
+                border: "1px solid rgba(184,154,220,0.25)",
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={point.src} alt="" className="h-5 w-5 shrink-0" />
+              {point.label}
+            </span>
+          ))}
         </div>
 
+        {/* primary headline — static, states the core promise up front */}
+        {/* primary headline — static, states the core promise up front */}
+        {/* primary headline — static, states the core promise up front */}
         <h1
           style={{
             transform: `scale(${scale})`,
             transformOrigin: "top center",
             color: "#F1E9FA",
+            fontWeight: 600,
           }}
           className={`font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] sm:leading-[1.05] text-balance transition-all duration-75 will-change-transform ${mounted ? "opacity-100" : "opacity-0"
             }`}
         >
-          Turn Your Learning Business
-          <br />
-          Into A
+          Automate Your Entire Coaching Business
+          With One{" "}
+          <span className="relative inline-block">
+            Learning Management System
+            <svg
+              className="absolute left-0 -bottom-2 sm:-bottom-3 w-full overflow-visible"
+              height="16"
+              viewBox="0 0 300 16"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M2 8 C 40 -2, 80 18, 120 8 C 160 -2, 200 18, 240 8 C 265 3, 285 12, 298 6"
+                stroke="#B89ADC"
+                strokeWidth="8"
+                strokeLinecap="round"
+                fill="none"
+                pathLength="1"
+                className={`headline-underline ${mounted ? "headline-underline--looping" : ""}`}
+              />
+            </svg>
+          </span>
         </h1>
 
-        <div className="w-full flex justify-center">
+
+        {/* subheadline — the old animated headline, now supporting copy */}
+        <div
+          className={`mt-4 sm:mt-6 flex flex-col items-center justify-center transition-all duration-700 delay-100 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+            }`}
+        >
+          <span
+            className="font-display text-lg sm:text-2xl md:text-3xl"
+            style={{ color: "rgba(241,233,250,0.75)" }}
+          >
+            Turn your coaching business into a
+          </span>
           {mounted && (
             <TextType
-              as="div"
-              className="!mt-1 sm:!mt-2 font-display italic"
+              as="span"
+              className="font-display italic"
               style={{
-                fontSize: "clamp(2rem, 9vw, 5.5rem)",
-                lineHeight: 1.05,
+                fontSize: "clamp(1.25rem, 4vw, 2.25rem)",
+                lineHeight: 1.1,
                 fontWeight: 700,
               }}
               textColors={["#D6C1E8"]}
@@ -251,35 +367,23 @@ export default function Hero() {
           )}
         </div>
 
-        <p
-          className={`mt-7 sm:mt-10 text-xs sm:text-base tracking-wide uppercase font-mono transition-all duration-700 delay-150 px-2 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
-            }`}
-          style={{ color: "white" }}
-        >
-          One Platform{" "}
-          <span style={{ color: "rgba(184,154,220,0.4)" }} className="mx-1 sm:mx-2">|</span>{" "}
-          Complete Control{" "}
-          <span style={{ color: "rgba(184,154,220,0.4)" }} className="mx-1 sm:mx-2">|</span>{" "}
-          Built Around Your Business
-        </p>
-
+        {/* single, higher-emphasis CTA */}
         <div
-          className={`mt-6 max-w-md sm:max-w-2xl mx-auto transition-all duration-700 delay-200 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+          className={`mt-8 flex justify-center transition-all duration-700 delay-200 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
             }`}
         >
           <a
             href="#consultation"
-            className="group inline-flex items-center justify-center gap-2 rounded-full w-full sm:w-auto px-6 py-3.5 sm:px-8 sm:py-4 text-sm font-semibold text-[#F1E9FA] bg-[#5D2E8C] shadow-[0_8px_30px_rgba(93,46,140,0.45)] transition-all duration-200 hover:bg-[#6a35a1] hover:-translate-y-0.5 hover:shadow-[0_10px_36px_rgba(93,46,140,0.55)] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B89ADC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1E1C2F]"
-          >
-            Book Your Free Consultation
-            <ArrowUpRight className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </a>
 
-          <a
-            href="#ecosystem"
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-[rgba(255,255,255,0.4)] w-full sm:w-auto px-6 py-3.5 sm:px-8 sm:py-4 text-sm font-semibold text-[rgba(241,233,250,0.9)] transition-all duration-200 hover:border-[rgba(184,154,220,0.7)] hover:bg-[rgba(184,154,220,0.08)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B89ADC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1E1C2F]"
+            className="group relative inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 sm:px-10 sm:py-5 text-sm sm:text-base font-semibold text-[#F1E9FA] bg-gradient-to-r from-[#5D2E8C] to-[#7B4DB5] shadow-[0_10px_40px_rgba(93,46,140,0.55)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_50px_rgba(93,46,140,0.7)] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B89ADC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1E1C2F]"
           >
-            See How It Works
+            <span
+              className="absolute inset-0 rounded-full pointer-events-none cta-pulse"
+              style={{ backgroundColor: "#7B4DB5" }}
+              aria-hidden="true"
+            />
+            <span className="relative">Book Your Free Consultation</span>
+            <ArrowUpRight className="relative h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
         </div>
 
@@ -292,7 +396,8 @@ export default function Hero() {
         </p>
 
         {/* ---------------------------------------------------------------- */}
-        {/* Product tabs — sits inside the hero section, under the CTAs     */}
+        {/* Product tabs — auto-advancing carousel of headings, sits inside  */}
+        {/* the hero section, under the CTA                                  */}
         {/* ---------------------------------------------------------------- */}
         <div className="mt-5 md:mt-5">
           {/* tab pills with sliding indicator — horizontally scrollable on mobile */}
@@ -330,7 +435,7 @@ export default function Hero() {
                     aria-selected={isActive}
                     aria-controls={`panel-${tab.id}`}
                     tabIndex={isActive ? 0 : -1}
-                    onClick={() => setActive(tab.id)}
+                    onClick={() => selectTabManually(tab.id)}
                     onKeyDown={(e) => handleTabKeyDown(e, i)}
                     className="relative z-10 flex shrink-0 items-center gap-1.5 sm:gap-2 whitespace-nowrap rounded-full px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-medium transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                     style={
@@ -349,8 +454,21 @@ export default function Hero() {
             </div>
           </div>
 
+          {/* auto-advance progress indicator — restarts every time the
+              active tab changes, whether by timer or by manual click */}
+          <div
+            className="mt-2.5 mx-auto h-0.5 w-full max-w-[220px] rounded-full overflow-hidden"
+            style={{ backgroundColor: "rgba(184,154,220,0.15)" }}
+          >
+            <div
+              key={activeTab.id + "-progress"}
+              className="h-full progress-bar"
+              style={{ backgroundColor: activeTab.accent }}
+            />
+          </div>
+
           {/* framed screenshot panel */}
-          <div className="mt-8 sm:mt-10 relative">
+          <div className="mt-6 sm:mt-8 relative">
             <div
               className="absolute -inset-4 rounded-3xl blur-2xl opacity-50 pointer-events-none transition-colors duration-500"
               style={{
@@ -416,37 +534,7 @@ export default function Hero() {
                 )}
               </div>
             </div>
-
-            {/* feature highlights */}
-            <div
-              key={activeTab.id + "-highlights"}
-              className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 panel-in text-left"
-            >
-              {activeTab.highlights.map((h) => (
-                <div
-                  key={h}
-                  className="flex items-start gap-2 rounded-xl px-3.5 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm"
-                  style={{
-                    backgroundColor: "rgba(43,27,61,0.5)",
-                    border: "1px solid rgba(184,154,220,0.1)",
-                    color: "rgba(241,233,250,0.85)",
-                  }}
-                >
-                  <Check className="h-4 w-4 mt-0.5 shrink-0" style={{ color: activeTab.accent }} />
-                  {h}
-                </div>
-              ))}
-            </div>
           </div>
-
-          {/* caption */}
-          <p
-            key={activeTab.id + "-caption"}
-            className="mt-5 sm:mt-6 text-center text-xs sm:text-base px-4 panel-in"
-            style={{ color: "rgba(184,154,220,0.7)" }}
-          >
-            {activeTab.caption}
-          </p>
         </div>
       </div>
 
@@ -471,8 +559,38 @@ export default function Hero() {
         .no-scrollbar::-webkit-scrollbar {
           display: none;
         }
+
+        @keyframes progressFill {
+          from {
+            width: 0%;
+          }
+          to {
+            width: 100%;
+          }
+        }
+        .progress-bar {
+          width: 0%;
+          animation: progressFill ${AUTO_ADVANCE_MS}ms linear;
+        }
+
+        @keyframes ctaPulse {
+          0% {
+            opacity: 0.35;
+            transform: scale(1);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(1.25);
+          }
+        }
+        .cta-pulse {
+          animation: ctaPulse 2s ease-out infinite;
+        }
+
         @media (prefers-reduced-motion: reduce) {
-          .panel-in {
+          .panel-in,
+          .progress-bar,
+          .cta-pulse {
             animation: none;
           }
         }

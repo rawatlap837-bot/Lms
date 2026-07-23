@@ -50,3 +50,33 @@ h1, h2, h3, h4, h5, h6 {
   background: #5d2e8c;
   border-radius: 999px;
 }
+.headline-underline {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.headline-underline--looping {
+  animation: underlineLoop 2.8s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+@keyframes underlineLoop {
+  0% {
+    stroke-dashoffset: 1;
+  }
+  35% {
+    stroke-dashoffset: 0;
+  }
+  65% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .headline-underline {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}

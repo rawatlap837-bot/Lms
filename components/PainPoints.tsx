@@ -7,17 +7,11 @@ export default function PainPoints() {
       <div className="max-w-6xl mx-auto px-6 md:px-10">
         {/* centered header, matching the reference's centered "Our Services" block */}
         <div className="max-w-2xl mx-auto text-center">
-          <Eyebrow>Your business shouldn&apos;t run on a patchwork of tools</Eyebrow>
           <h2 className="font-display text-3xl md:text-5xl text-ink text-balance">
-            Still managing your learning business manually?
+            Still Doing These Tasks Manually Every Day?
           </h2>
-          <p className="mt-6 text-ink/60 leading-relaxed">
-            As your student base grows, managing everything through
-            spreadsheets, WhatsApp, and disconnected systems becomes
-            increasingly difficult.
-          </p>
           <p className="mt-4 font-display italic text-lg md:text-xl text-plum">
-            Wasted time. Operational chaos. Poor student experience. Slower growth.
+            Most coaches and institutes waste 2–5 hours daily on repetitive work.
           </p>
         </div>
 
