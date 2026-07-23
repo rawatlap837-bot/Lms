@@ -284,7 +284,7 @@ export default function EcosystemPipeline() {
             </>
           )}
 
-          <div className="flex flex-col gap-10">
+          <div className="flex flex-col gap-4">
             {rows.map((row, rowIndex) => {
               const isReversed = rowIndex % 2 === 1;
               const flatIndex = rowIndex * COLS;

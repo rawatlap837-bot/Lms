@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+// @ts-ignore: No type declarations available for three
 import * as THREE from 'three';
 
 interface LightPillarProps {
