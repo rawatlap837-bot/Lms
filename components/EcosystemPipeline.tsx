@@ -209,12 +209,12 @@ export default function EcosystemPipeline() {
         <div className="max-w-2xl mx-auto text-center">
           <Eyebrow dark>One powerful platform</Eyebrow>
           <h2 className="font-display text-3xl md:text-5xl text-cream text-balance">
-            Your entire business, connected end to end.
+            One Platform That Runs Your Coaching Business Automatically
           </h2>
           <p className="mt-6 text-mist/60 leading-relaxed">
-            From the moment a student joins your program to the moment they
-            complete their learning journey, every process is organized,
-            automated, and easy to manage.
+            Imagine if every student got instant access, automatic reminders, and
+            a personal dashboard — while you got real-time reports, records, and
+            zero WhatsApp chaos.
           </p>
         </div>
 
@@ -455,7 +455,7 @@ export default function EcosystemPipeline() {
           No unnecessary switching. No disconnected systems. No operational
           confusion.{" "}
           <span className="text-cream/90">
-            Just one platform built around your business.
+            That&apos;s exactly what our Custom LMS Software does.
           </span>
         </p>
       </div>

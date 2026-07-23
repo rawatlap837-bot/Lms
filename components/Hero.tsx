@@ -18,6 +18,8 @@ import LightPillar from "../Animation/LightPillar";
 import excel from "../app/ICONS/excel.svg"
 import googlesheet from "../app/ICONS/googlesheet.svg"
 import whatsapp from "../app/ICONS/whatsapp.svg"
+import drive from "../app/ICONS/googledrive.svg"
+
 // Palette reference (from provided swatch):
 // 01 Royal Purple    #2B1B3D
 // 02 Deep Violet     #45225F
@@ -76,7 +78,8 @@ const TABS = [
 const PAIN_POINTS = [
   { id: "whatsapp", label: "", src: whatsapp.src },
   { id: "excel", label: "", src: excel.src },
-  { id: "drive", label: "", src: googlesheet.src },
+  { id: "googlesheet", label: "", src: googlesheet.src },
+  { id: "drive", label: "", src: drive.src },
 ];
 
 // How long each tab stays active before auto-advancing to the next one.
@@ -265,14 +268,14 @@ export default function Hero() {
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-10 pt-24 sm:pt-32 md:pt-40 pb-10 md:pb-14 text-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-10 pt-10 sm:pt-32 md:pt-40 pb-10 md:pb-14 text-center">
         {/* pain-point bar: the scattered tools this platform replaces */}
         <div
           className={`flex flex-wrap items-center justify-center gap-x-2 gap-y-2 mb-6 sm:mb-8 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
             }`}
         >
           <span
-            className="font-mono text-[15px] sm:text-[20px] tracking-[0.2em] uppercase"
+            className=" text-[15px] sm:text-[20px] tracking-[0.2em] uppercase mt-0"
             style={{ color: "rgba(241,233,250,0.6)" }}
           >
             Stop Managing Students On
@@ -285,8 +288,8 @@ export default function Hero() {
               className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] sm:text-xs font-medium"
               style={{
                 color: "#F1E9FA",
-                backgroundColor: "rgba(241,233,250,0.06)",
-                border: "1px solid rgba(184,154,220,0.25)",
+                backgroundColor: "rgba(255, 209, 209, 0.38)",
+                border: "1px solid rgba(255, 61, 61, 0.38)",
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -306,13 +309,13 @@ export default function Hero() {
             color: "#F1E9FA",
             fontWeight: 600,
           }}
-          className={`font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] sm:leading-[1.05] text-balance transition-all duration-75 will-change-transform ${mounted ? "opacity-100" : "opacity-0"
+          className={`font-display mt-20 text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] sm:leading-[1.05] text-balance transition-all duration-75 will-change-transform ${mounted ? "opacity-100" : "opacity-0"
             }`}
         >
-          Automate Your Entire Coaching Business
-          With One{" "}
-          <span className="relative inline-block text-3xl sm:text-3xl md:text-4xl lg:text-5xl align-middle">
-            Learning Management System
+          Automate Entire Coaching
+          With One <br />
+          <span className="relative inline-block text-3xl sm:text-3xl md:text-4xl lg:text-5xl align-middle ">
+            MANAGMENT SYSTEM
             <svg
               className="absolute left-0 -bottom-1.5 sm:-bottom-2 w-full overflow-visible"
               height="16"

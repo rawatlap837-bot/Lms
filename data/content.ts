@@ -16,6 +16,18 @@ import {
   ShieldCheck,
   Smartphone,
   Globe,
+  Unlock,
+  BellRing,
+  Wallet,
+  Database,
+  Sparkles,
+  BookOpenCheck,
+  Laptop,
+  Award,
+  Languages,
+  LineChart,
+  Dumbbell,
+  Users,
 } from "lucide-react";
 
 /* -------- Pain points section -------- */
@@ -46,19 +58,27 @@ export const painPoints = [
     body: "\u201cWhere is the recording?\u201d, \u201cDid my payment go through?\u201d, \u201cWhen is the next class?\u201d",
   },
 ];
-
+/* -------- Before vs After section -------- */
+export const beforeAfter = [
+  { before: "Excel sheets for students", after: "Centralized student database" },
+  { before: "UPI screenshots in WhatsApp", after: "Automatic online payments" },
+  { before: "Manual reminder messages", after: "Auto reminders by system" },
+  { before: "Google Drive links", after: "Secure course portal" },
+  { before: "Repeated student questions", after: "Self-service student dashboard" },
+  { before: "Daily admin work", after: "Runs automatically" },
+];
 /* -------- Ecosystem pipeline section -------- */
 export const pipeline = [
-  { title: "Admissions", body: "Bring new students in with a guided, branded enrollment flow." },
-  { title: "Student Registration", body: "Capture the right details once — no re-entry, no lost forms." },
-  { title: "Personalized Dashboard", body: "Every student gets a home base for courses, classes, and progress." },
-  { title: "Course & Content Management", body: "Organize modules, lessons, and materials the way you actually teach." },
-  { title: "Live & Recorded Classes", body: "One access point for scheduled sessions and on-demand content." },
-  { title: "Assignments, Tests & Quizzes", body: "Assess understanding and keep learners accountable." },
-  { title: "Attendance & Progress Tracking", body: "See participation and momentum at a glance, per student." },
-  { title: "Payments & Transactions", body: "Collect and reconcile fees without chasing spreadsheets." },
-  { title: "Reports & Analytics", body: "Turn activity into decisions with real operational visibility." },
-  { title: "Business Growth", body: "A system built to take on more students without more chaos." },
+  { icon: Unlock, title: "Instant Course Access", body: "Students get access the moment payment goes through — no manual approval needed." },
+  { icon: BellRing, title: "Automatic Fee Reminders", body: "Reminders go out on their own, so you never have to chase a payment again." },
+  { icon: LayoutDashboard, title: "Personal Login Dashboard", body: "Every student gets their own space to log in and see everything at a glance." },
+  { icon: FolderOpen, title: "Everything in One Place", body: "Recordings, PDFs, and tests live together — no more scattered links." },
+  { icon: TrendingUp, title: "Progress Tracking", body: "Students see their own progress without ever having to ask you." },
+  { icon: Wallet, title: "Real-Time Payment Reports", body: "Know exactly what's been paid, pending, or overdue — as it happens." },
+  { icon: Database, title: "Student Database", body: "Every student's details, organized and searchable in one system." },
+  { icon: ClipboardCheck, title: "Attendance Records", body: "Participation tracked automatically, class after class." },
+  { icon: BarChart3, title: "Course Analytics", body: "See how each course is actually performing, backed by real data." },
+  { icon: Sparkles, title: "Zero WhatsApp Chaos", body: "No more chasing messages, sending files, or repeating the same replies." },
 ];
 
 /* -------- Features section -------- */
@@ -78,16 +98,17 @@ export const features = [
   { icon: ShieldCheck, title: "Role-Based Access", body: "Give students, instructors, and admins exactly the access they need." },
   { icon: Smartphone, title: "Mobile-Friendly Experience", body: "A seamless learning experience across desktop, tablet, and mobile." },
 ];
-
-/* -------- Vodka "Why Custom" section -------- */
-export const whyCustom = [
-  { title: "100% Custom Development", body: "Designed specifically around your business model, workflow, and goals." },
-  { title: "Scalable Architecture", body: "A strong foundation today that supports your growing student base tomorrow." },
-  { title: "Secure & Reliable", body: "Built with security and reliability in mind, to protect your data and theirs." },
-  { title: "Simple, User-Friendly Experience", body: "Complex operations feel simple, for your team and your students alike." },
-  { title: "Ready for Future Growth", body: "Add new features and capabilities as your platform evolves." },
-  { title: "Ongoing Technical Support", body: "Support beyond development, so your platform keeps performing as you grow." },
+export const audience = [
+  { icon: GraduationCap, title: "Coaching Institutes" },
+  { icon: BookOpenCheck, title: "Tuition Centers" },
+  { icon: Laptop, title: "Online Course Creators" },
+  { icon: Award, title: "Skill Training Academies" },
+  { icon: Languages, title: "Language Classes" },
+  { icon: LineChart, title: "Trading / Marketing Coaches" },
+  { icon: Dumbbell, title: "Fitness / Yoga Trainers" },
+  { icon: Users, title: "Any Business With Students, Payments & Content" },
 ];
+
 
 /* -------- Business impact section -------- */
 export const impact = [
