@@ -335,7 +335,7 @@ export default function Hero() {
 
         {/* subheadline — the old animated headline, now supporting copy */}
         <div
-          className={`mt-4 sm:mt-6 flex flex-col items-center justify-center transition-all duration-700 delay-100 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+          className={`mt-4 sm:mt-6 flex flex-col sm:flex-row items-center justify-center gap-x-2 gap-y-1 transition-all duration-700 delay-100 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
             }`}
         >
           <span

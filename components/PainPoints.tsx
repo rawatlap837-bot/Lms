@@ -1,5 +1,14 @@
 import Eyebrow from "./Eyebrow";
 import { painPoints } from "@/data/content";
+import { AlertCircle } from "lucide-react";
+
+const CONSEQUENCES = [
+  "Missed payments",
+  "Confused students",
+  "Lost time",
+  "No proper records",
+  "Business depends completely on you",
+];
 
 export default function PainPoints() {
   return (
@@ -38,6 +47,24 @@ export default function PainPoints() {
           ))}
         </div>
 
+        {/* "the result?" consequence block — escalates tension before the CTA */}
+        <div className="mt-20 md:mt-24 rounded-3xl bg-gradient-to-br from-[#2B1B3D] to-[#45225F] px-8 py-12 md:px-14 md:py-14 text-center">
+          <h3 className="font-display italic text-2xl md:text-3xl text-white">
+            The result?
+          </h3>
+          <ul className="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-4 max-w-3xl mx-auto">
+            {CONSEQUENCES.map((item) => (
+              <li
+                key={item}
+                className="flex items-center gap-2 text-sm md:text-base text-white/85"
+              >
+                <AlertCircle className="h-4 w-4 shrink-0 text-[#D6C1E8]" strokeWidth={2} />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+
         {/* bottom pill CTA, matching the reference's "Want to discuss..." pill */}
         <div className="mt-16 flex justify-center">
           <a
@@ -51,6 +78,6 @@ export default function PainPoints() {
           </a>
         </div>
       </div>
-    </section>
+    </section >
   );
 }
