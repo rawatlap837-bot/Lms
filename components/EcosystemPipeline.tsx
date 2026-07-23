@@ -327,7 +327,7 @@ export default function EcosystemPipeline() {
                         className="relative flex flex-col items-start gap-4"
                       >
                         <motion.div
-                          ref={(el) => {
+                          ref={(el: HTMLDivElement | null) => {
                             nodeRefs.current[i] = el;
                           }}
                           initial={{ opacity: 0, scale: 0.6 }}
@@ -447,7 +447,7 @@ export default function EcosystemPipeline() {
                   className="relative z-10 flex flex-col items-center text-center gap-14"
                 >
                   <motion.div
-                    ref={(el) => {
+                    ref={(el: HTMLDivElement | null) => {
                       mobileNodeRefs.current[i] = el;
                     }}
                     initial={{ opacity: 0, scale: 0.6 }}
