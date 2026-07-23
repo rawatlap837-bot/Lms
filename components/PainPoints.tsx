@@ -78,6 +78,6 @@ export default function PainPoints() {
           </a>
         </div>
       </div>
-    </section >
+    </section>
   );
 }

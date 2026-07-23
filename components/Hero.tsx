@@ -311,10 +311,10 @@ export default function Hero() {
         >
           Automate Your Entire Coaching Business
           With One{" "}
-          <span className="relative inline-block">
+          <span className="relative inline-block text-3xl sm:text-3xl md:text-4xl lg:text-5xl align-middle">
             Learning Management System
             <svg
-              className="absolute left-0 -bottom-2 sm:-bottom-3 w-full overflow-visible"
+              className="absolute left-0 -bottom-1.5 sm:-bottom-2 w-full overflow-visible"
               height="16"
               viewBox="0 0 300 16"
               preserveAspectRatio="none"
