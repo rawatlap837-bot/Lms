@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Table2,
   FileSpreadsheet,
@@ -15,6 +17,7 @@ import {
   FileWarning,
   User,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 // If you keep copy centrally in "@/data/content" like `services` and
 // `pillars`, move this array there and import it the same way, e.g.
@@ -66,11 +69,11 @@ const results = [
 ] as const;
 
 const cardBg: Record<string, string> = {
-  mint: "from-[#e3f3e6]/60 to-[#cfe9d8]/50",
-  sky: "from-[#e2edf6]/60 to-[#cfe0ee]/50",
-  lavender: "from-[#ece4f6]/60 to-[#ddd1ee]/50",
-  amber: "from-[#f7ecd9]/60 to-[#f0dcb8]/50",
-  teal: "from-[#e0f2ec]/60 to-[#c9e8dd]/50",
+  mint: "from-[#cdead4]/80 to-[#a9d9b8]/70",
+  sky: "from-[#cce0f0]/80 to-[#a3c6e4]/70",
+  lavender: "from-[#ddd0ef]/80 to-[#c0a3e0]/70",
+  amber: "from-[#f2ddac]/80 to-[#e6bd6e]/70",
+  teal: "from-[#c5e9dd]/80 to-[#9adcc6]/70",
 };
 
 const glowColor: Record<string, string> = {
@@ -81,47 +84,86 @@ const glowColor: Record<string, string> = {
   teal: "bg-[#5cc7ac]",
 };
 
+// Stagger timing: each card/item waits `i * 0.12s` before starting,
+// so they cascade in left-to-right, row by row.
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.12,
+      duration: 0.6,
+      ease: [0.16, 1, 0.3, 1] as const,
+    },
+  }),
+};
+
 export default function TheProblem() {
   return (
-    <section className="relative bg-[#0e0e12] py-24 md:py-32 overflow-hidden">
-      <div className="pointer-events-none absolute -top-24 left-1/4 h-72 w-72 rounded-full bg-[#7bc99a]/20 blur-[100px]" />
-      <div className="pointer-events-none absolute top-40 right-1/4 h-72 w-72 rounded-full bg-[#a98ad6]/20 blur-[100px]" />
-      <div className="pointer-events-none absolute bottom-0 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-[#e0b25c]/20 blur-[100px]" />
+    <section className="relative bg-white py-10 md:py-30 overflow-hidden">
+      <div className="pointer-events-none absolute -top-24 left-1/4 h-72 w-72 rounded-full bg-[#7bc99a]/15 blur-[100px]" />
+      <div className="pointer-events-none absolute top-40 right-1/4 h-72 w-72 rounded-full bg-[#a98ad6]/15 blur-[100px]" />
+      <div className="pointer-events-none absolute bottom-0 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-[#e0b25c]/15 blur-[100px]" />
 
       <div className="relative max-w-6xl mx-auto px-6 md:px-10">
-        <div className="flex justify-center">
-          <span className="text-sm px-4 py-1.5 rounded-full bg-white text-ink">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="flex justify-center"
+        >
+          <span className="text-sm px-4 py-1.5 rounded-full bg-ink text-white">
             The Problem
           </span>
-        </div>
+        </motion.div>
 
-        <h2 className="mt-6 text-center font-display text-3xl md:text-5xl text-white max-w-3xl mx-auto">
+        <motion.h2
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-6 text-center font-display text-3xl md:text-5xl text-ink max-w-3xl mx-auto"
+        >
           Still Doing These Tasks Manually Every Day?
-        </h2>
-        <p className="mt-4 text-center text-white/50 max-w-xl mx-auto">
+        </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-4 text-center text-ink/50 max-w-xl mx-auto"
+        >
           Most coaches and institutes waste 2–5 hours daily on repetitive
           work.
-        </p>
+        </motion.p>
 
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {painPoints.map(({ icons, title, body, tag, accent }) => {
+          {painPoints.map(({ icons, title, body, tag, accent }, i) => {
             const [IconA, IconB] = icons;
             return (
-              <div
+              <motion.div
                 key={title}
+                custom={i}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+                variants={fadeUp}
                 className={`group relative rounded-3xl p-6 md:p-7
                   bg-gradient-to-br ${cardBg[accent]}
-                  backdrop-blur-xl border border-white/[0.15]
-                  shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_8px_32px_rgba(0,0,0,0.3)]
+                  backdrop-blur-xl border border-ink/[0.08]
+                  shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_8px_32px_rgba(0,0,0,0.08)]
                   transition-transform duration-300 hover:-translate-y-1`}
               >
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-3xl bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-3xl bg-gradient-to-r from-transparent via-white/70 to-transparent" />
 
                 <div className="flex items-center gap-2">
-                  <span className="h-10 w-10 rounded-xl flex items-center justify-center bg-white/60 backdrop-blur-md ring-1 ring-white/40">
+                  <span className="h-10 w-10 rounded-xl flex items-center justify-center bg-white/70 backdrop-blur-md ring-1 ring-white/60">
                     <IconA className="h-5 w-5 text-ink/70" strokeWidth={1.8} />
                   </span>
-                  <span className="h-10 w-10 rounded-xl flex items-center justify-center bg-white/60 backdrop-blur-md ring-1 ring-white/40">
+                  <span className="h-10 w-10 rounded-xl flex items-center justify-center bg-white/70 backdrop-blur-md ring-1 ring-white/60">
                     <IconB className="h-5 w-5 text-ink/70" strokeWidth={1.8} />
                   </span>
                 </div>
@@ -133,38 +175,49 @@ export default function TheProblem() {
                   {body}
                 </p>
 
-                <span className="mt-8 inline-flex items-center rounded-full bg-white/60 backdrop-blur-md px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-white/40">
+                <span className="mt-8 inline-flex items-center rounded-full bg-white/70 backdrop-blur-md px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-white/60">
                   {tag}
                 </span>
 
                 <div
-                  className={`pointer-events-none absolute -z-10 -bottom-6 left-1/2 h-24 w-40 -translate-x-1/2 rounded-full opacity-25 blur-[60px] ${glowColor[accent]}`}
+                  className={`pointer-events-none absolute -z-10 -bottom-6 left-1/2 h-24 w-40 -translate-x-1/2 rounded-full opacity-20 blur-[60px] ${glowColor[accent]}`}
                 />
-              </div>
+              </motion.div>
             );
           })}
         </div>
 
-        <div className="mt-16 rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-8 md:p-10">
-          <h3 className="text-center font-display text-2xl md:text-3xl text-white">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-16 rounded-3xl border border-ink/10 bg-ink/[0.02] backdrop-blur-xl p-8 md:p-10"
+        >
+          <h3 className="text-center font-display text-2xl md:text-3xl text-ink">
             The result?
           </h3>
           <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            {results.map(({ icon: Icon, label }) => (
-              <div
+            {results.map(({ icon: Icon, label }, i) => (
+              <motion.div
                 key={label}
-                className="flex flex-col items-center text-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-5"
+                custom={i}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.3 }}
+                variants={fadeUp}
+                className="flex flex-col items-center text-center gap-3 rounded-2xl border border-ink/10 bg-white p-5"
               >
                 <span className="h-10 w-10 rounded-xl flex items-center justify-center bg-rose-500/10 ring-1 ring-rose-500/20">
                   <Icon className="h-5 w-5 text-rose-400" strokeWidth={1.8} />
                 </span>
-                <span className="text-sm text-white/70 leading-snug">
+                <span className="text-sm text-ink/70 leading-snug">
                   {label}
                 </span>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

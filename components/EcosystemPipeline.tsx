@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import Eyebrow from "./Eyebrow";
 import { pipeline } from "@/data/content";
+import { motion, useInView } from "framer-motion";
 
 const COLS = 3;
 const BULGE = 170; // outward push at row turns — must clear the widest
@@ -251,12 +252,16 @@ export default function EcosystemPipeline() {
                   opacity={0.15}
                   style={{ filter: "blur(10px)", marginTop: "20px", marginLeft: "100px" }}
                 />
-                <path
+                <motion.path
                   d={pathD}
                   fill="none"
                   stroke="url(#pipelineGradient)"
                   strokeWidth={12}
                   strokeLinecap="round"
+                  initial={{ pathLength: 0 }}
+                  whileInView={{ pathLength: 1 }}
+                  viewport={{ once: true, amount: 0.1 }}
+                  transition={{ duration: 1.8, ease: "easeInOut" }}
                 />
                 <path
                   d={pathD}
@@ -321,24 +326,28 @@ export default function EcosystemPipeline() {
                         style={{ gridColumnStart: startCol + physicalCol + 1 }}
                         className="relative flex flex-col items-start gap-4"
                       >
-                        <div
+                        <motion.div
                           ref={(el) => {
                             nodeRefs.current[i] = el;
                           }}
+                          initial={{ opacity: 0, scale: 0.6 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
+                          viewport={{ once: true, amount: 0.6 }}
+                          transition={{ duration: 0.4, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }}
                           className="relative z-10 h-12 w-12 rounded-full bg-ink-soft border border-violet/50 flex items-center justify-center shrink-0 shadow-[0_0_0_6px_rgba(20,14,30,1)]"
                         >
                           <Icon className="h-5 w-5 text-lilac" strokeWidth={1.8} />
-                        </div>
-                        <div
+                        </motion.div>
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, amount: 0.6 }}
+                          transition={{ duration: 0.4, delay: i * 0.15 + 0.1, ease: [0.16, 1, 0.3, 1] }}
                           className={isRightmost ? "max-w-[160px]" : "max-w-[85%]"}
                         >
-                          <h3 className="font-display text-lg text-cream">
-                            {step.title}
-                          </h3>
-                          <p className="mt-1.5 text-sm text-mist/55 leading-relaxed">
-                            {step.body}
-                          </p>
-                        </div>
+                          <h3 className="font-display text-lg text-cream">{step.title}</h3>
+                          <p className="mt-1.5 text-sm text-mist/55 leading-relaxed">{step.body}</p>
+                        </motion.div>
                       </div>
                     );
                   })}
@@ -350,6 +359,8 @@ export default function EcosystemPipeline() {
 
         {/* mobile: icons stacked in a centered column, connector zigzags
             side to side between them instead of running straight down */}
+        {/* mobile: icons stacked in a centered column, connector zigzags
+    side to side between them instead of running straight down */}
         <div
           ref={mobileContainerRef}
           className="md:hidden mt-10 relative max-w-xs mx-auto"
@@ -385,12 +396,16 @@ export default function EcosystemPipeline() {
                   opacity={0.15}
                   style={{ filter: "blur(8px)" }}
                 />
-                <path
+                <motion.path
                   d={mobilePathD}
                   fill="none"
                   stroke="url(#mobilePipelineGradient)"
                   strokeWidth={9}
                   strokeLinecap="round"
+                  initial={{ pathLength: 0 }}
+                  whileInView={{ pathLength: 1 }}
+                  viewport={{ once: true, amount: 0.1 }}
+                  transition={{ duration: 1.8, ease: "easeInOut" }}
                 />
                 <path
                   d={mobilePathD}
@@ -431,20 +446,29 @@ export default function EcosystemPipeline() {
                   key={step.title}
                   className="relative z-10 flex flex-col items-center text-center gap-14"
                 >
-                  <div
+                  <motion.div
                     ref={(el) => {
                       mobileNodeRefs.current[i] = el;
                     }}
+                    initial={{ opacity: 0, scale: 0.6 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true, amount: 0.6 }}
+                    transition={{ duration: 0.4, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }}
                     className="h-12 w-12 rounded-full bg-ink-soft border border-violet/50 flex items-center justify-center shrink-0 shadow-[0_0_0_6px_rgba(20,14,30,1)]"
                   >
                     <Icon className="h-5 w-5 text-lilac" strokeWidth={1.8} />
-                  </div>
-                  <div>
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.6 }}
+                    transition={{ duration: 0.4, delay: i * 0.15 + 0.1, ease: [0.16, 1, 0.3, 1] }}
+                  >
                     <h3 className="font-display text-xl text-cream">{step.title}</h3>
                     <p className="mt-1.5 text-sm text-mist/55 leading-relaxed">
                       {step.body}
                     </p>
-                  </div>
+                  </motion.div>
                 </div>
               );
             })}
