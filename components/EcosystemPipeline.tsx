@@ -55,23 +55,19 @@ function withBulges(points: Point[], rows: unknown[][], bulge: number): Point[] 
     }
     const isLastRow = rowIdx === rows.length - 1;
     if (!isLastRow) {
-      const nextRow = rows[rowIdx + 1];
-      // Bulge waypoints assume the next row starts at the same edge x as
-      // this row ends (true for full rows, via the reversal trick). A
-      // shorter/centered row (e.g. a trailing single-item row) doesn't sit
-      // at that edge, so bulging toward it just zigzags. Connect straight
-      // to it instead.
-      const isNextRowPartial = nextRow.length < row.length;
-      if (!isNextRowPartial) {
-        const lastPoint = points[idx - 1];
-        const nextPoint = points[idx];
-        const dir = rowIdx % 2 === 0 ? 1 : -1;
-        result.push({ x: lastPoint.x + dir * bulge, y: lastPoint.y });
-        result.push({
-          x: (nextPoint?.x ?? lastPoint.x) + dir * bulge,
-          y: nextPoint?.y ?? lastPoint.y,
-        });
-      }
+      // Rows are right-aligned (via startCol = COLS - row.length), so a
+      // full row and the row after it — even a shorter trailing row —
+      // always share the same edge x at the turn. That means every turn,
+      // including into a partial last row, can use the same bulge
+      // treatment for a consistent rounded-curve look.
+      const lastPoint = points[idx - 1];
+      const nextPoint = points[idx];
+      const dir = rowIdx % 2 === 0 ? 1 : -1;
+      result.push({ x: lastPoint.x + dir * bulge, y: lastPoint.y });
+      result.push({
+        x: (nextPoint?.x ?? lastPoint.x) + dir * bulge,
+        y: nextPoint?.y ?? lastPoint.y,
+      });
     }
   });
   return result;
@@ -223,7 +219,7 @@ export default function EcosystemPipeline() {
         </div>
 
         {/* desktop: serpentine roadmap */}
-        <div ref={containerRef} className="hidden md:block relative mt-24 mb-6">
+        <div ref={containerRef} className="hidden md:block relative mt-24 mb-6 ms-20">
           <svg
             className="absolute inset-0 pointer-events-none overflow-visible"
             width={svgSize.width}
@@ -234,7 +230,7 @@ export default function EcosystemPipeline() {
                 id="pipelineGradient"
                 x1="0"
                 y1="0"
-                x2="0"
+                x2={svgSize.width}
                 y2={svgSize.height}
                 gradientUnits="userSpaceOnUse"
               >
@@ -253,7 +249,7 @@ export default function EcosystemPipeline() {
                   strokeWidth={26}
                   strokeLinecap="round"
                   opacity={0.15}
-                  style={{ filter: "blur(10px)" }}
+                  style={{ filter: "blur(10px)", marginTop: "20px", marginLeft: "100px" }}
                 />
                 <path
                   d={pathD}
