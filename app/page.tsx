@@ -6,7 +6,7 @@ import Features from "@/components/Feautres";
 import WhoIsThisFor from "@/components/Whoisthisfor";
 import SocialProof from "@/components/SocialProof";
 import Process from "@/components/Process";
-import Faq from "@/components/Faq";
+import Urgency from "@/components/Urgency";
 import FinalCta from "@/components/FinalCta";
 
 export default function Home() {
@@ -20,7 +20,7 @@ export default function Home() {
       <WhoIsThisFor />
       <SocialProof />
       <Process />
-      <Faq />
+      <Urgency />
       <FinalCta />
     </main>
   );

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Users,
   CreditCard,
@@ -10,7 +12,73 @@ import {
   Wallet,
   Globe,
 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
+
+/* ------------------------------ scroll reveal ----------------------------- */
+/**
+ * Fades + lifts an element into place the first time it enters the viewport.
+ * - Fires once (unobserves after reveal) so re-scrolling doesn't replay it.
+ * - `delay` (ms) lets siblings stagger in rather than popping together.
+ * - Respects prefers-reduced-motion by skipping the animation entirely.
+ */
+function useReveal<T extends HTMLElement>(delay = 0) {
+  const ref = useRef<T | null>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (prefersReducedMotion) {
+      setVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          const timer = setTimeout(() => setVisible(true), delay);
+          observer.unobserve(node);
+          return () => clearTimeout(timer);
+        }
+      },
+      { threshold: 0.2, rootMargin: "0px 0px -60px 0px" }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [delay]);
+
+  return { ref, visible };
+}
+
+function Reveal({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const { ref, visible } = useReveal<HTMLDivElement>(delay);
+  return (
+    <div
+      ref={ref}
+      className={[
+        "transition-[opacity,transform] duration-700 ease-out motion-reduce:transition-none",
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6",
+        className,
+      ].join(" ")}
+    >
+      {children}
+    </div>
+  );
+}
 
 /* ----------------------------- shared shell ----------------------------- */
 
@@ -214,117 +282,131 @@ function AnalyticsMock() {
 
 export default function Features() {
   return (
-    <section className="bg-cream py-24 md:py-32">
+    <section className="bg-[#241132] py-10 md:py-32">
       <div className="max-w-6xl mx-auto px-6 md:px-10">
-        <div className="max-w-2xl">
-          <p className="font-mono text-xs tracking-[0.25em] uppercase mb-4 text-indigo/70">
-            Everything under one roof
-          </p>
-          <h2 className="font-display text-3xl md:text-5xl text-ink text-balance">
-            Everything you need to run your institute in one place
-          </h2>
-          <p className="mt-6 text-ink/65 leading-relaxed">
-            No more juggling spreadsheets, payment links, and three different
-            apps.{" "}
-            <span className="font-display italic">
-              One dashboard runs the whole operation.
-            </span>
-          </p>
-        </div>
+        <Reveal>
+          <div className="max-w-2xl">
+            <p className="font-mono text-xs tracking-[0.25em] uppercase mb-4 text-vodka/80">
+              Everything under one roof
+            </p>
+            <h2 className="font-display text-3xl md:text-5xl text-cream text-balance">
+              Everything you need to run your institute in one place
+            </h2>
+            <p className="mt-6 text-cream/65 leading-relaxed">
+              No more juggling spreadsheets, payment links, and three
+              different apps.{" "}
+              <span className="font-display italic text-cream">
+                One dashboard runs the whole operation.
+              </span>
+            </p>
+          </div>
+        </Reveal>
 
         {/* Row 1 — three equal mockup cards */}
         <div className="mt-14 grid md:grid-cols-3 gap-5">
-          <Card>
-            <Badge icon={Users} tone="indigo" />
-            <h3 className="font-display text-lg text-ink mt-5">
-              Student Management
-            </h3>
-            <p className="mt-2 text-sm text-ink/55 leading-relaxed">
-              Add students, organize batches, and track progress with complete
-              records kept automatically.
-            </p>
-            <MockFrame>
-              <StudentMock />
-            </MockFrame>
-          </Card>
+          <Reveal delay={0}>
+            <Card>
+              <Badge icon={Users} tone="indigo" />
+              <h3 className="font-display text-lg text-ink mt-5">
+                Student Management
+              </h3>
+              <p className="mt-2 text-sm text-ink/55 leading-relaxed">
+                Add students, organize batches, and track progress with
+                complete records kept automatically.
+              </p>
+              <MockFrame>
+                <StudentMock />
+              </MockFrame>
+            </Card>
+          </Reveal>
 
-          <Card>
-            <Badge icon={PlayCircle} tone="vodka" />
-            <h3 className="font-display text-lg text-ink mt-5">
-              Course Hosting
-            </h3>
-            <p className="mt-2 text-sm text-ink/55 leading-relaxed">
-              Upload videos, PDFs, assignments, and tests into a secure
-              student portal.
-            </p>
-            <MockFrame>
-              <CourseMock />
-            </MockFrame>
-          </Card>
+          <Reveal delay={120}>
+            <Card>
+              <Badge icon={PlayCircle} tone="vodka" />
+              <h3 className="font-display text-lg text-ink mt-5">
+                Course Hosting
+              </h3>
+              <p className="mt-2 text-sm text-ink/55 leading-relaxed">
+                Upload videos, PDFs, assignments, and tests into a secure
+                student portal.
+              </p>
+              <MockFrame>
+                <CourseMock />
+              </MockFrame>
+            </Card>
+          </Reveal>
 
-          <Card>
-            <Badge icon={CreditCard} tone="mist" />
-            <h3 className="font-display text-lg text-ink mt-5">
-              Payment Collection
-            </h3>
-            <p className="mt-2 text-sm text-ink/55 leading-relaxed">
-              Accept fees online and send automatic invoices and payment
-              confirmations.
-            </p>
-            <MockFrame>
-              <PaymentMock />
-            </MockFrame>
-          </Card>
+          <Reveal delay={240}>
+            <Card>
+              <Badge icon={CreditCard} tone="mist" />
+              <h3 className="font-display text-lg text-ink mt-5">
+                Payment Collection
+              </h3>
+              <p className="mt-2 text-sm text-ink/55 leading-relaxed">
+                Accept fees online and send automatic invoices and payment
+                confirmations.
+              </p>
+              <MockFrame>
+                <PaymentMock />
+              </MockFrame>
+            </Card>
+          </Reveal>
         </div>
 
         {/* Row 2 — half card + wide card */}
         <div className="mt-5 grid md:grid-cols-3 gap-5">
-          <Card>
-            <Badge icon={BellRing} tone="vodka" />
-            <h3 className="font-display text-lg text-ink mt-5">
-              Auto Reminders
-            </h3>
-            <p className="mt-2 text-sm text-ink/55 leading-relaxed">
-              Fee due reminders, class notifications, and renewal alerts sent
-              automatically.
-            </p>
-            <MockFrame>
-              <ReminderMock />
-            </MockFrame>
-          </Card>
+          <Reveal delay={0}>
+            <Card>
+              <Badge icon={BellRing} tone="vodka" />
+              <h3 className="font-display text-lg text-ink mt-5">
+                Auto Reminders
+              </h3>
+              <p className="mt-2 text-sm text-ink/55 leading-relaxed">
+                Fee due reminders, class notifications, and renewal alerts
+                sent automatically.
+              </p>
+              <MockFrame>
+                <ReminderMock />
+              </MockFrame>
+            </Card>
+          </Reveal>
 
-          <Card span="2">
-            <Badge icon={Palette} tone="indigo" />
-            <h3 className="font-display text-lg text-ink mt-5">
-              Branded Experience
-            </h3>
-            <p className="mt-2 text-sm text-ink/55 leading-relaxed max-w-md">
-              Your logo, your colors, your domain — a professional dashboard
-              your students recognize as yours.
-            </p>
-            <MockFrame>
-              <BrandMock />
-            </MockFrame>
-          </Card>
+          <Reveal delay={120} className="md:col-span-2">
+            <Card span="2">
+              <Badge icon={Palette} tone="indigo" />
+              <h3 className="font-display text-lg text-ink mt-5">
+                Branded Experience
+              </h3>
+              <p className="mt-2 text-sm text-ink/55 leading-relaxed max-w-md">
+                Your logo, your colors, your domain — a professional
+                dashboard your students recognize as yours.
+              </p>
+              <MockFrame>
+                <BrandMock />
+              </MockFrame>
+            </Card>
+          </Reveal>
         </div>
 
         {/* Row 3 — dark analytics card, full width */}
         <div className="mt-5">
-          <Card dark span="3">
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div>
-                <Badge icon={BarChart3} tone="cream" />
-                <h3 className="font-display text-lg text-cream mt-5">
-                  Reports &amp; Analytics
-                </h3>
-                <p className="mt-2 text-sm text-mist/55 leading-relaxed max-w-sm">
-                  Track revenue, active students, pending payments, and course
-                  engagement — instantly, in one view.
-                </p>
+          <Reveal>
+            <Card dark span="3">
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <Badge icon={BarChart3} tone="cream" />
+                  <h3 className="font-display text-lg text-cream mt-5">
+                    Reports &amp; Analytics
+                  </h3>
+                  <p className="mt-2 text-sm text-mist/55 leading-relaxed max-w-sm">
+                    Track revenue, active students, pending payments, and
+                    course engagement — instantly, in one view.
+                  </p>
+                </div>
+                <AnalyticsMock />
               </div>
-              <AnalyticsMock />
-            </div>
-          </Card>
+            </Card>
+          </Reveal>
         </div>
       </div>
     </section>

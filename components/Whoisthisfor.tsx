@@ -1,55 +1,147 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import Eyebrow from "./Eyebrow";
 import { audience } from "@/data/content";
 
+/* ------------------------------ scroll reveal ----------------------------- */
+/**
+ * Fades + lifts an element into place the first time it enters the viewport.
+ * Fires once, respects prefers-reduced-motion, supports a stagger delay.
+ */
+function useReveal<T extends HTMLElement>(delay = 0) {
+  const ref = useRef<T | null>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (prefersReducedMotion) {
+      setVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          const timer = setTimeout(() => setVisible(true), delay);
+          observer.unobserve(node);
+          return () => clearTimeout(timer);
+        }
+      },
+      { threshold: 0.2, rootMargin: "0px 0px -60px 0px" }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [delay]);
+
+  return { ref, visible };
+}
+
+function Reveal({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const { ref, visible } = useReveal<HTMLDivElement>(delay);
+  return (
+    <div
+      ref={ref}
+      className={[
+        "transition-[opacity,transform] duration-700 ease-out motion-reduce:transition-none",
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6",
+        className,
+      ].join(" ")}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* ------------------------------- component ------------------------------- */
+
 export default function WhoIsThisFor() {
   return (
-    <section className="bg-cream py-24 md:py-32">
-      <div className="max-w-6xl mx-auto px-6 md:px-10">
-        <div className="max-w-2xl mx-auto text-center">
-          <Eyebrow>Who is this for?</Eyebrow>
-          <h2 className="font-display text-3xl md:text-5xl text-ink text-balance">
-            Perfect For
-          </h2>
-        </div>
+    <section className="relative bg-cream py-10 md:py-32 overflow-hidden">
+      {/* ambient background accents — quiet, not decorative for its own sake */}
+      <div
+        className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full blur-3xl opacity-40"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(184,154,220,0.35) 0%, rgba(184,154,220,0) 70%)",
+        }}
+      />
+      <div
+        className="pointer-events-none absolute -bottom-32 -right-16 h-96 w-96 rounded-full blur-3xl opacity-30"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(214,193,232,0.4) 0%, rgba(214,193,232,0) 70%)",
+        }}
+      />
+
+      <div className="relative max-w-6xl mx-auto px-6 md:px-10">
+        <Reveal>
+          <div className="max-w-2xl mx-auto text-center">
+            <Eyebrow>Who is this for?</Eyebrow>
+            <h2 className="font-display text-3xl md:text-5xl text-ink text-balance">
+              Perfect For
+            </h2>
+          </div>
+        </Reveal>
 
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {audience.map(({ icon: Icon, title }, i) => {
             const isLast = i === audience.length - 1;
             return (
-              <div
+              <Reveal
                 key={title}
-                className={`rounded-2xl border p-7 flex flex-col items-start gap-4 transition-colors ${isLast
-                  ? "sm:col-span-2 lg:col-span-4 bg-gradient-to-r from-plum/[0.06] to-violet/[0.06] border-plum/15"
-                  : "bg-white border-ink/[0.06] hover:border-plum/30"
-                  }`}
+                delay={i * 100}
+                className={isLast ? "sm:col-span-2 lg:col-span-4" : ""}
               >
                 <div
-                  className="h-11 w-11 rounded-full flex items-center justify-center shrink-0"
-                  style={{
-                    background:
-                      "radial-gradient(circle at 35% 30%, #D6C1E8 0%, #B89ADC 70%)",
-                  }}
+                  className={`group h-full rounded-2xl border p-7 flex flex-col items-start gap-4 transition-all duration-300 ${isLast
+                    ? "bg-gradient-to-r from-plum/[0.06] to-violet/[0.06] border-plum/15 hover:border-plum/30 hover:shadow-[0_16px_40px_-18px_rgba(120,70,160,0.25)]"
+                    : "bg-white border-ink/[0.06] hover:border-plum/30 hover:-translate-y-1 hover:shadow-[0_16px_36px_-16px_rgba(0,0,0,0.14)]"
+                    }`}
                 >
-                  <Icon className="h-5 w-5 text-white" strokeWidth={1.8} />
+                  <div
+                    className="h-11 w-11 rounded-full flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110 shadow-[0_6px_16px_-6px_rgba(120,70,160,0.45)]"
+                    style={{
+                      background:
+                        "radial-gradient(circle at 35% 30%, #D6C1E8 0%, #B89ADC 70%)",
+                    }}
+                  >
+                    <Icon className="h-5 w-5 text-white" strokeWidth={1.8} />
+                  </div>
+                  <h3 className="font-display text-base md:text-lg text-ink text-balance">
+                    {title}
+                  </h3>
                 </div>
-                <h3 className="font-display text-base md:text-lg text-ink text-balance">
-                  {title}
-                </h3>
-              </div>
+              </Reveal>
             );
           })}
         </div>
 
         {/* closing line — the "if you have 20+ students" hook */}
-        <div className="mt-14 flex justify-center">
-          <p className="inline-flex items-center gap-2 rounded-full bg-white border border-ink/10 px-6 py-3.5 text-sm md:text-base text-ink/75 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.15)]">
+        <Reveal delay={audience.length * 100} className="mt-14 flex justify-center">
+          <p className="inline-flex items-center gap-2 rounded-full bg-white border border-ink/10 px-6 py-3.5 text-sm md:text-base text-ink/75 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.15)] transition-shadow duration-300 hover:shadow-[0_14px_36px_-14px_rgba(120,70,160,0.3)]">
             If you have{" "}
             <span className="font-display font-semibold text-plum">
               20+ students
             </span>
             , this will save you hours every week.
           </p>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

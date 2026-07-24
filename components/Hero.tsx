@@ -19,6 +19,11 @@ import excel from "../app/ICONS/excel.svg"
 import googlesheet from "../app/ICONS/googlesheet.svg"
 import whatsapp from "../app/ICONS/whatsapp.svg"
 import drive from "../app/ICONS/googledrive.svg"
+import website from "../app/tabsimage/website.png"
+import Overview from "../app/tabsimage/overview2.jpeg"
+import Userpannel from "../app/tabsimage/Userpannel.jpeg"
+import Courses from "../app/tabsimage/Courses.jpeg"
+import Anyalitcs from "../app/tabsimage/Anyalitcs.jpeg"
 
 // Palette reference (from provided swatch):
 // 01 Royal Purple    #2B1B3D
@@ -41,38 +46,42 @@ const TABS = [
     label: "Website",
     icon: LayoutDashboard,
     accent: "#7B4DB5",
-    image: "/screenshots/website.png",
+    image: website,
   },
   {
     id: "admin",
     label: "Admin Panel",
     icon: Settings,
     accent: "#5D2E8C",
-    image: "/screenshots/admin-panel.png",
+    image: Overview,
   },
   {
     id: "user",
     label: "User Panel",
     icon: Users,
     accent: "#45225F",
-    image: "/screenshots/user-panel.png",
+    image: Userpannel,
   },
   {
     id: "progress",
     label: "Student Progress",
     icon: TrendingUp,
     accent: "#B89ADC",
-    image: "/screenshots/student-progress.png",
+    image: Courses,
   },
   {
     id: "analytics",
     label: "Analytics",
     icon: BarChart3,
     accent: "#D6C1E8",
-    image: "/screenshots/analytics.png",
+    image: Anyalitcs,
   },
 ];
-
+// Static imports (e.g. `import Courses from "../app/tabsimage/Courses.jpeg"`)
+// resolve to a StaticImageData object, not a plain URL string. This normalizes
+// both cases so every consumer below can just treat `image` as a string.
+const getImageSrc = (image: string | { src: string }) =>
+  typeof image === "string" ? image : image.src;
 // The scattered tools this platform replaces — shown in the pain-point bar.
 // The scattered tools this platform replaces — shown in the pain-point bar.
 const PAIN_POINTS = [
@@ -507,7 +516,7 @@ export default function Hero() {
               </div>
 
               {/* screenshot, scale+fade on tab change, with a placeholder if missing */}
-              <div key={activeTab.id} className="relative aspect-[16/9] panel-in">
+              <div key={activeTab.id} className="relative aspect-[16/9] panel-in bg-[#1a1224]">
                 {imgError ? (
                   <div
                     className="w-full h-full flex flex-col items-center justify-center gap-3 px-6 text-center"
@@ -524,16 +533,16 @@ export default function Hero() {
                       className="text-[10px] sm:text-xs font-mono"
                       style={{ color: "rgba(184,154,220,0.45)" }}
                     >
-                      Add your screenshot at {activeTab.image}
+                      Add your screenshot at {getImageSrc(activeTab.image)}
                     </span>
                   </div>
                 ) : (
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img
-                    src={activeTab.image}
+                    src={getImageSrc(activeTab.image)}
                     alt={activeTab.label}
                     onError={() => setImgError(true)}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                 )}
               </div>
