@@ -298,13 +298,13 @@ export default function Hero() {
             color: "#F1E9FA",
             fontWeight: 600,
           }}
-          className={`font-display  mt-10  text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] sm:leading-[1.05] text-balance transition-all duration-75 will-change-transform ${mounted ? "opacity-100" : "opacity-0"
+          className={`font-display  mt-10  text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] sm:leading-[1.05] text-balance transition-all duration-75 will-change-transform ${mounted ? "opacity-100" : "opacity-0"
             }`}
         >
           <span style={{ color: "#FFD84D" }}>Automate</span> Entire Coaching
           With One <br />
           <span
-            className="relative inline-block text-4xl sm:text-3xl md:text-4xl lg:text-5xl align-middle"
+            className="relative inline-block text-md sm:text-3xl md:text-4xl lg:text-7xl align-middle"
             style={{ color: "#FFD84D" }}
           >
             Managment System
@@ -329,7 +329,7 @@ export default function Hero() {
         </h1>
 
         <div
-          className={`mt-4 sm:mt-6 flex flex-col items-center justify-center transition-all duration-700 delay-100 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+          className={`mt-7 sm:mt-6 flex flex-col items-center justify-center transition-all duration-700 delay-100 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
             }`}
         >
           <span

@@ -116,7 +116,7 @@ export default function TheProblem() {
   const { open } = useFormModal();
 
   return (
-    <section className="relative bg-white py-10 md:py-30 overflow-hidden">
+    <section className="relative bg-[#fdf1f0] py-10 md:py-30 overflow-hidden">
       <div className="pointer-events-none absolute -top-24 left-1/4 h-72 w-72 rounded-full bg-[#7bc99a]/15 blur-[100px]" />
       <div className="pointer-events-none absolute top-40 right-1/4 h-72 w-72 rounded-full bg-[#a98ad6]/15 blur-[100px]" />
       <div className="pointer-events-none absolute bottom-0 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-[#e0b25c]/15 blur-[100px]" />
@@ -159,7 +159,7 @@ export default function TheProblem() {
         </motion.p>
 
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {painPoints.map(({ icons, title, body, tag, accent }, i) => {
+          {painPoints.map(({ icons, title, tag, accent }, i) => {
             const [IconA, IconB] = icons;
             return (
               <motion.div
@@ -176,6 +176,11 @@ export default function TheProblem() {
                   transition-transform duration-300 hover:-translate-y-1`}
               >
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-3xl bg-gradient-to-r from-transparent via-white/70 to-transparent" />
+
+                {/* Tag — top right corner, bordered badge */}
+                <span className="absolute top-4 right-4 md:top-5 md:right-5 rounded-full border border-ink/15 px-3 py-1 text-xs font-medium text-ink/70 bg-white/40">
+                  {tag}
+                </span>
 
                 <div className="flex items-center gap-2">
                   <span className="h-10 w-10 rounded-xl flex items-center justify-center bg-white/70 backdrop-blur-md ring-1 ring-white/60">
@@ -197,13 +202,6 @@ export default function TheProblem() {
                 <h3 className="mt-6 font-display text-xl md:text-2xl text-ink leading-snug max-w-[28ch]">
                   {title}
                 </h3>
-                <p className="mt-3 text-sm text-ink/60 leading-relaxed max-w-[32ch]">
-                  {body}
-                </p>
-
-                <span className="mt-8 inline-flex items-center rounded-full bg-white/70 backdrop-blur-md px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-white/60">
-                  {tag}
-                </span>
 
                 <div
                   className={`pointer-events-none absolute -z-10 -bottom-6 left-1/2 h-24 w-40 -translate-x-1/2 rounded-full opacity-20 blur-[60px] ${glowColor[accent]}`}
