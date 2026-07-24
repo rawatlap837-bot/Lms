@@ -250,14 +250,14 @@ export default function Hero() {
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-10 pt-5  sm:pt-32 md:pt-40 pb-10 md:pb-14 text-center">
+      <div className="relative max-w-7xl mx-auto px-3 sm:px-6 md:px-10 pt-5  sm:pt-32 md:pt-40 pb-10 md:pb-14 text-center">
         <div
           className={`flex flex-wrap items-center justify-center gap-x-2 gap-y-2 mb-6 sm:mb-8 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
             }`}
         >
           <span
             className=" text-[15px] sm:text-[20px] tracking-[0.2em] uppercase mt-0"
-            style={{ color: "rgba(241,233,250,0.6)" }}
+            style={{ color: "White" }}
           >
             Stop Managing Students On
           </span>
