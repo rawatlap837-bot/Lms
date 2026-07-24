@@ -80,3 +80,30 @@ h1, h2, h3, h4, h5, h6 {
     stroke-dashoffset: 0;
   }
 }
+.text-glow {
+  text-shadow:
+    0 0 8px rgba(241, 233, 250, 0.9),
+    0 0 18px rgba(184, 154, 220, 0.8),
+}
+.shine-sweep {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 100%
+  );
+  transform: translateX(-150%) skewX(-12deg);
+  animation: shine-move 3s ease-in-out infinite;
+}
+
+@keyframes shine-move {
+  0% {
+    transform: translateX(-150%) skewX(-12deg);
+  }
+  50% {
+    transform: translateX(350%) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(350%) skewX(-12deg);
+  }
+}

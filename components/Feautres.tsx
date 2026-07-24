@@ -12,9 +12,12 @@ import {
   Wallet,
   Globe,
   ArrowUpRight,
+  TrendingUp,
+  type LucideIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import Eyebrow from "./Eyebrow";
 import { useFormModal } from "./FormModalContext";
 
 /* ------------------------------ scroll reveal ----------------------------- */
@@ -96,13 +99,15 @@ function Card({
   return (
     <div
       className={[
-        "rounded-3xl p-7 md:p-8 transition-all duration-300",
+        "group/card relative rounded-3xl p-7 md:p-8 transition-all duration-300",
         span === "2" ? "md:col-span-2" : span === "3" ? "md:col-span-3" : "",
         dark
-          ? "bg-ink border border-ink"
-          : "bg-white border border-ink/10 hover:border-vodka hover:-translate-y-1 hover:shadow-[0_16px_36px_-16px_rgba(0,0,0,0.18)]",
+          ? "bg-gradient-to-br from-ink to-[#1a0f26] border border-white/[0.06] shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)]"
+          : "bg-white border border-ink/[0.07] shadow-[0_4px_20px_-8px_rgba(0,0,0,0.06)] hover:border-vodka/60 hover:-translate-y-1 hover:shadow-[0_20px_44px_-16px_rgba(0,0,0,0.16)]",
       ].join(" ")}
     >
+      {/* faint top highlight — gives cards a touch of glassy polish */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-t-3xl bg-gradient-to-r from-transparent via-white/60 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
       {children}
     </div>
   );
@@ -112,18 +117,18 @@ function Badge({
   icon: Icon,
   tone,
 }: {
-  icon: typeof Users;
+  icon: LucideIcon;
   tone: "indigo" | "vodka" | "mist" | "cream";
 }) {
   const tones: Record<string, string> = {
-    indigo: "bg-indigo/10 text-indigo",
-    vodka: "bg-vodka/25 text-ink",
-    mist: "bg-mist/20 text-ink",
-    cream: "bg-cream text-ink",
+    indigo: "bg-gradient-to-br from-indigo/15 to-indigo/5 text-indigo ring-1 ring-indigo/10",
+    vodka: "bg-gradient-to-br from-vodka/30 to-vodka/10 text-ink ring-1 ring-vodka/20",
+    mist: "bg-gradient-to-br from-mist/25 to-mist/10 text-ink ring-1 ring-mist/20",
+    cream: "bg-gradient-to-br from-cream to-cream/70 text-ink ring-1 ring-white/10",
   };
   return (
     <div
-      className={`h-11 w-11 rounded-2xl flex items-center justify-center ${tones[tone]}`}
+      className={`h-11 w-11 rounded-2xl flex items-center justify-center shrink-0 ${tones[tone]}`}
     >
       <Icon className="h-5 w-5" strokeWidth={1.8} />
     </div>
@@ -132,7 +137,7 @@ function Badge({
 
 function MockFrame({ children }: { children: ReactNode }) {
   return (
-    <div className="mt-6 rounded-2xl bg-mist/10 border border-ink/5 p-4 overflow-hidden">
+    <div className="mt-6 rounded-2xl bg-mist/10 border border-ink/[0.05] p-4 overflow-hidden">
       {children}
     </div>
   );
@@ -151,9 +156,9 @@ function StudentMock() {
       {rows.map((r) => (
         <div
           key={r.name}
-          className="flex items-center gap-3 bg-white rounded-xl border border-ink/5 px-3 py-2"
+          className="flex items-center gap-3 bg-white rounded-xl border border-ink/[0.05] px-3 py-2 shadow-[0_1px_2px_rgba(0,0,0,0.03)]"
         >
-          <div className="h-7 w-7 rounded-full bg-indigo/15 text-indigo font-display text-xs flex items-center justify-center">
+          <div className="h-7 w-7 rounded-full bg-indigo/15 text-indigo font-display text-xs flex items-center justify-center shrink-0">
             {r.name[0]}
           </div>
           <div className="flex-1 min-w-0">
@@ -166,6 +171,9 @@ function StudentMock() {
               style={{ width: `${r.pct}%` }}
             />
           </div>
+          <span className="text-[10px] font-medium text-ink/50 w-7 text-right tabular-nums">
+            {r.pct}%
+          </span>
         </div>
       ))}
     </div>
@@ -178,9 +186,10 @@ function CourseMock() {
       {["04:12", "07:48", "03:05"].map((t) => (
         <div
           key={t}
-          className="aspect-square rounded-xl bg-ink/95 relative flex items-center justify-center"
+          className="aspect-square rounded-xl bg-ink/95 relative flex items-center justify-center overflow-hidden"
         >
-          <div className="h-7 w-7 rounded-full bg-white/15 flex items-center justify-center">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+          <div className="h-7 w-7 rounded-full bg-white/15 flex items-center justify-center backdrop-blur-sm">
             <Play className="h-3 w-3 text-cream fill-cream" />
           </div>
           <span className="absolute bottom-1.5 right-1.5 text-[9px] text-cream/70 font-mono">
@@ -194,15 +203,15 @@ function CourseMock() {
 
 function PaymentMock() {
   return (
-    <div className="bg-white rounded-xl border border-ink/5 p-3.5">
+    <div className="bg-white rounded-xl border border-ink/[0.05] p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
       <div className="flex items-center justify-between">
         <p className="text-xs text-ink/50">Invoice #INV-0842</p>
-        <span className="text-[10px] font-medium text-emerald-600 bg-emerald-50 rounded-full px-2 py-0.5">
+        <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5 ring-1 ring-emerald-200">
           Paid
         </span>
       </div>
       <p className="font-display text-xl text-ink mt-1.5">₹12,500.00</p>
-      <div className="flex items-center gap-1.5 mt-3">
+      <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-ink/[0.05]">
         <Wallet className="h-3.5 w-3.5 text-ink/40" strokeWidth={1.8} />
         <span className="text-[10px] text-ink/45">
           UPI · auto-confirmation sent
@@ -221,7 +230,7 @@ function ReminderMock() {
       ].map((n) => (
         <div
           key={n.title}
-          className="flex items-start gap-2.5 bg-white rounded-xl border border-ink/5 px-3 py-2.5"
+          className="flex items-start gap-2.5 bg-white rounded-xl border border-ink/[0.05] px-3 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.03)]"
         >
           <div className="h-6 w-6 rounded-full bg-vodka/25 flex items-center justify-center shrink-0 mt-0.5">
             <BellRing className="h-3 w-3 text-ink" strokeWidth={2} />
@@ -243,16 +252,17 @@ function BrandMock() {
         {[Palette, Globe, Check].map((Icon, i) => (
           <div
             key={i}
-            className="h-9 w-9 rounded-xl bg-white border border-ink/5 flex items-center justify-center"
+            className="h-9 w-9 rounded-xl bg-white border border-ink/[0.05] flex items-center justify-center shadow-[0_1px_2px_rgba(0,0,0,0.03)]"
           >
             <Icon className="h-4 w-4 text-ink/60" strokeWidth={1.8} />
           </div>
         ))}
       </div>
-      <div className="mt-3 rounded-xl bg-white border border-ink/5 overflow-hidden">
+      <div className="mt-3 rounded-xl bg-white border border-ink/[0.05] overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
         <div className="h-7 bg-indigo/90 flex items-center px-3 gap-1.5">
           <div className="h-2 w-2 rounded-full bg-white/40" />
-          <span className="text-[10px] text-white/80 font-mono">
+          <div className="h-2 w-2 rounded-full bg-white/40" />
+          <span className="ml-1.5 text-[10px] text-white/80 font-mono">
             learn.yourinstitute.com
           </span>
         </div>
@@ -266,16 +276,37 @@ function BrandMock() {
 }
 
 function AnalyticsMock() {
-  const bars = [40, 65, 50, 80, 60, 95, 70];
+  const bars = [
+    { m: "Jan", h: 40 },
+    { m: "Feb", h: 65 },
+    { m: "Mar", h: 50 },
+    { m: "Apr", h: 80 },
+    { m: "May", h: 60 },
+    { m: "Jun", h: 95 },
+    { m: "Jul", h: 70 },
+  ];
   return (
-    <div className="flex items-end gap-2 h-24">
-      {bars.map((h, i) => (
-        <div
-          key={i}
-          className="flex-1 rounded-t-md bg-vodka/80"
-          style={{ height: `${h}%` }}
-        />
-      ))}
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-medium">
+          <TrendingUp className="h-3.5 w-3.5" strokeWidth={2} />
+          +42% this quarter
+        </div>
+        <span className="text-[10px] text-mist/40 font-mono">Revenue (₹)</span>
+      </div>
+      <div className="flex items-end gap-2 h-24">
+        {bars.map((b) => (
+          <div key={b.m} className="flex-1 flex flex-col items-center gap-1.5">
+            <div className="w-full flex items-end h-24">
+              <div
+                className="w-full rounded-t-md bg-gradient-to-t from-vodka/70 to-vodka transition-all duration-300 hover:from-vodka hover:to-vodka/90"
+                style={{ height: `${b.h}%` }}
+              />
+            </div>
+            <span className="text-[9px] text-mist/40 font-mono">{b.m}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -284,16 +315,15 @@ function AnalyticsMock() {
 
 export default function Features() {
   const { open } = useFormModal();
+
   return (
     <section className="bg-[#241132] py-10 md:py-32">
       <div className="max-w-6xl mx-auto px-6 md:px-10">
         <Reveal>
           <div className="max-w-2xl">
-            <p className="font-mono text-xs tracking-[0.25em] uppercase mb-4 text-vodka/80">
-              Everything under one roof
-            </p>
-            <h2 className="font-display text-3xl md:text-5xl text-cream text-balance">
-              Everything you need to run your institute in one place
+            <Eyebrow dark>Everything under one roof</Eyebrow>
+            <h2 className="mt-2 font-display text-3xl md:text-5xl text-cream text-balance">
+              Everything You Need to Run Your Institute
             </h2>
             <p className="mt-6 text-cream/65 leading-relaxed">
               No more juggling spreadsheets, payment links, and three
@@ -411,7 +441,9 @@ export default function Features() {
             </Card>
           </Reveal>
         </div>
-        <div className="mt-10 flex justify-center">
+
+        {/* CTA */}
+        <div className="mt-14 flex flex-col items-center gap-4">
           <Reveal>
             <button
               onClick={open}
@@ -425,6 +457,11 @@ export default function Features() {
               <span className="relative">Book Your Free Consultation</span>
               <ArrowUpRight className="relative h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </button>
+          </Reveal>
+          <Reveal delay={100}>
+            <p className="text-xs text-cream/40">
+              No credit card required · Setup within a few working days
+            </p>
           </Reveal>
         </div>
       </div>

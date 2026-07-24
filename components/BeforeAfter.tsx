@@ -1,10 +1,33 @@
 "use client";
 
+import {
+  Check,
+  X,
+  ArrowUpRight,
+  Table2,
+  CreditCard,
+  MessageCircle,
+  Video,
+  BarChart3,
+  type LucideIcon,
+} from "lucide-react";
 import { motion } from "framer-motion";
-import { Check, X, ArrowUpRight } from "lucide-react";
 import Eyebrow from "./Eyebrow";
 import { beforeAfter } from "@/data/content";
 import { useFormModal } from "./FormModalContext";
+
+// Maps each row (by index) to an icon representing its theme.
+// Adjust these to match what your actual beforeAfter rows are about —
+// this assumes the same 5 themes used in TheProblem.tsx (tracking,
+// payments, reminders, videos, reports). Add/remove entries if your
+// array has a different length.
+const rowIcons: LucideIcon[] = [
+  Table2,
+  CreditCard,
+  MessageCircle,
+  Video,
+  BarChart3,
+];
 
 export default function BeforeAfter() {
   const { open } = useFormModal();
@@ -46,30 +69,36 @@ export default function BeforeAfter() {
                 </span>
               </div>
               <div>
-                {beforeAfter.map((row, i) => (
-                  <motion.div
-                    key={row.before}
-                    initial={{ opacity: 0, x: -16 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, amount: 0.6 }}
-                    transition={{
-                      duration: 0.4,
-                      delay: 0.15 + i * 0.08,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                    className={`flex items-center justify-between gap-4 px-6 py-5 ${i !== beforeAfter.length - 1
-                      ? "border-b border-ink/[0.06]"
-                      : ""
-                      }`}
-                  >
-                    <span className="text-sm md:text-base text-ink/70 leading-snug">
-                      {row.before}
-                    </span>
-                    <span className="shrink-0 h-9 w-9 rounded-full bg-red-50 border border-red-200 text-red-500 text-xs font-semibold flex items-center justify-center">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                  </motion.div>
-                ))}
+                {beforeAfter.map((row, i) => {
+                  const RowIcon = rowIcons[i % rowIcons.length];
+                  return (
+                    <motion.div
+                      key={row.before}
+                      initial={{ opacity: 0, x: -16 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true, amount: 0.6 }}
+                      transition={{
+                        duration: 0.4,
+                        delay: 0.15 + i * 0.08,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                      className={`flex items-center gap-4 px-6 py-5 ${i !== beforeAfter.length - 1
+                        ? "border-b border-ink/[0.06]"
+                        : ""
+                        }`}
+                    >
+                      <span className="shrink-0 h-9 w-9 rounded-xl bg-red-50 border border-red-200 text-red-500 flex items-center justify-center">
+                        <RowIcon className="h-4 w-4" strokeWidth={1.8} />
+                      </span>
+                      <span className="flex-1 text-sm md:text-base text-ink/70 leading-snug">
+                        {row.before}
+                      </span>
+                      <span className="shrink-0 h-7 w-7 rounded-full bg-red-50 border border-red-200 text-red-500 flex items-center justify-center">
+                        <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+                      </span>
+                    </motion.div>
+                  );
+                })}
               </div>
             </motion.div>
 
@@ -104,30 +133,36 @@ export default function BeforeAfter() {
                 </span>
               </div>
               <div>
-                {beforeAfter.map((row, i) => (
-                  <motion.div
-                    key={row.after}
-                    initial={{ opacity: 0, x: 16 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, amount: 0.6 }}
-                    transition={{
-                      duration: 0.4,
-                      delay: 0.25 + i * 0.08,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                    className={`flex items-center justify-between gap-4 px-6 py-5 ${i !== beforeAfter.length - 1
-                      ? "border-b border-ink/[0.06]"
-                      : ""
-                      }`}
-                  >
-                    <span className="text-sm md:text-base text-ink font-medium leading-snug">
-                      {row.after}
-                    </span>
-                    <span className="shrink-0 h-9 w-9 rounded-full bg-[#3FA98A]/10 border border-[#3FA98A]/30 text-[#2E8A6E] text-xs font-semibold flex items-center justify-center">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                  </motion.div>
-                ))}
+                {beforeAfter.map((row, i) => {
+                  const RowIcon = rowIcons[i % rowIcons.length];
+                  return (
+                    <motion.div
+                      key={row.after}
+                      initial={{ opacity: 0, x: 16 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true, amount: 0.6 }}
+                      transition={{
+                        duration: 0.4,
+                        delay: 0.25 + i * 0.08,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                      className={`flex items-center gap-4 px-6 py-5 ${i !== beforeAfter.length - 1
+                        ? "border-b border-ink/[0.06]"
+                        : ""
+                        }`}
+                    >
+                      <span className="shrink-0 h-9 w-9 rounded-xl bg-[#3FA98A]/10 border border-[#3FA98A]/30 text-[#2E8A6E] flex items-center justify-center">
+                        <RowIcon className="h-4 w-4" strokeWidth={1.8} />
+                      </span>
+                      <span className="flex-1 text-sm md:text-base text-ink font-medium leading-snug">
+                        {row.after}
+                      </span>
+                      <span className="shrink-0 h-7 w-7 rounded-full bg-[#3FA98A]/10 border border-[#3FA98A]/30 text-[#2E8A6E] flex items-center justify-center">
+                        <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
+                      </span>
+                    </motion.div>
+                  );
+                })}
               </div>
             </motion.div>
 

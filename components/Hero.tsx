@@ -298,13 +298,13 @@ export default function Hero() {
             color: "#F1E9FA",
             fontWeight: 600,
           }}
-          className={`font-display  mt-10  text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] sm:leading-[1.05] text-balance transition-all duration-75 will-change-transform ${mounted ? "opacity-100" : "opacity-0"
+          className={`font-display  mt-10  text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] sm:leading-[1.05] text-balance transition-all duration-75 will-change-transform ${mounted ? "opacity-100" : "opacity-0"
             }`}
         >
           <span style={{ color: "#FFD84D" }}>Automate</span> Entire Coaching
           With One <br />
           <span
-            className="relative inline-block text-3xl sm:text-3xl md:text-4xl lg:text-5xl align-middle"
+            className="relative inline-block text-4xl sm:text-3xl md:text-4xl lg:text-5xl align-middle"
             style={{ color: "#FFD84D" }}
           >
             Managment System
@@ -375,8 +375,21 @@ export default function Hero() {
               style={{ backgroundColor: "#7B4DB5" }}
               aria-hidden="true"
             />
-            <span className="relative font-bo">Book Your Free Consultation</span>
-            <ArrowUpRight className="relative h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+
+            {/* Shine sweep */}
+            <span
+              className="absolute inset-0 rounded-full pointer-events-none overflow-hidden"
+              aria-hidden="true"
+            >
+              <span className="shine-sweep absolute top-0 left-0 h-full w-1/3 -skew-x-12" />
+            </span>
+
+            <span
+              className="relative font-bold text-lg text-glow"
+            >
+              Book Your Free Demo
+            </span>
+            {/* <ArrowUpRight className="relative h-6 w-6 sm:h-5 sm:w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /> */}
           </button>
         </div>
 

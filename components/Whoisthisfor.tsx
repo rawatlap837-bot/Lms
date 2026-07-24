@@ -135,16 +135,6 @@ export default function WhoIsThisFor() {
           })}
         </div>
 
-        {/* closing line — the "if you have 20+ students" hook */}
-        <Reveal delay={audience.length * 100} className="mt-14 flex justify-center">
-          <p className="inline-flex items-center gap-2 rounded-full bg-white border border-ink/10 px-6 py-3.5 text-sm md:text-base text-ink/75 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.15)] transition-shadow duration-300 hover:shadow-[0_14px_36px_-14px_rgba(120,70,160,0.3)]">
-            If you have{" "}
-            <span className="font-display font-semibold text-plum">
-              20+ students
-            </span>
-            , this will save you hours every week.
-          </p>
-        </Reveal>
 
         {/* CTA button */}
         <Reveal delay={audience.length * 100 + 150} className="mt-10 flex justify-center">

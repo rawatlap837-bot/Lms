@@ -14,9 +14,9 @@ export default function Home() {
     <main className="bg-ink">
       <Hero />
       <PainPoints />
-      <EcosystemPipeline />
-      <BeforeAfter />
       <Features />
+      <BeforeAfter />
+      <EcosystemPipeline />
       <WhoIsThisFor />
       <SocialProof />
       <Process />

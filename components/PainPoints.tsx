@@ -27,35 +27,35 @@ import { useFormModal } from "./FormModalContext";
 const painPoints = [
   {
     icons: [Table2, FileSpreadsheet],
-    title: "Managing students on Excel/Google Sheets",
+    title: "Managing Students On Excel/Google Sheets",
     body: "Tracking admissions, fees, and attendance manually.",
     tag: "Manual tracking",
     accent: "mint",
   },
   {
     icons: [CreditCard, UserCheck],
-    title: "Collecting payments one-by-one",
+    title: "Collecting Payments One-By-One",
     body: "Following up with every student personally.",
     tag: "No automation",
     accent: "sky",
   },
   {
     icons: [MessageCircle, Repeat],
-    title: "Sending reminders on WhatsApp",
+    title: "Sending Reminders On WhatsApp",
     body: "Typing the same fee and class reminders repeatedly.",
     tag: "Repetitive",
     accent: "lavender",
   },
   {
     icons: [Video, FolderX],
-    title: "Sharing videos through Google Drive",
+    title: "Sharing Videos Through Google Drive",
     body: "Links get forwarded, expire, or become disorganized.",
     tag: "Disorganized",
     accent: "amber",
   },
   {
     icons: [HelpCircle, AlertCircle],
-    title: "Answering the same student questions repeatedly",
+    title: "Answering The Same Student Questions Repeatedly",
     body: `"Where is the recording?", "Did my payment go through?", "When is the next class?"`,
     tag: "Time drain",
     accent: "teal",
@@ -84,6 +84,17 @@ const glowColor: Record<string, string> = {
   lavender: "bg-[#a98ad6]",
   amber: "bg-[#e0b25c]",
   teal: "bg-[#5cc7ac]",
+};
+
+// Solid, saturated version of each accent — used for icon color so icons
+// pop against the card's pale gradient background instead of blending
+// into it like the old flat gray did.
+const iconColor: Record<string, string> = {
+  mint: "#2f9e63",
+  sky: "#2f78b5",
+  lavender: "#8a4fd1",
+  amber: "#c9871f",
+  teal: "#1f9e82",
 };
 
 // Stagger timing: each card/item waits `i * 0.12s` before starting,
@@ -168,10 +179,18 @@ export default function TheProblem() {
 
                 <div className="flex items-center gap-2">
                   <span className="h-10 w-10 rounded-xl flex items-center justify-center bg-white/70 backdrop-blur-md ring-1 ring-white/60">
-                    <IconA className="h-5 w-5 text-ink/70" strokeWidth={1.8} />
+                    <IconA
+                      className="h-5 w-5"
+                      strokeWidth={1.8}
+                      style={{ color: iconColor[accent] }}
+                    />
                   </span>
                   <span className="h-10 w-10 rounded-xl flex items-center justify-center bg-white/70 backdrop-blur-md ring-1 ring-white/60">
-                    <IconB className="h-5 w-5 text-ink/70" strokeWidth={1.8} />
+                    <IconB
+                      className="h-5 w-5"
+                      strokeWidth={1.8}
+                      style={{ color: iconColor[accent] }}
+                    />
                   </span>
                 </div>
 
@@ -210,7 +229,7 @@ export default function TheProblem() {
               style={{ backgroundColor: "#7B4DB5" }}
               aria-hidden="true"
             />
-            <span className="relative">Book Your Free Consultation</span>
+            <span className="relative font-bold">Book Your Free Consultation</span>
             <ArrowUpRight className="relative h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </button>
         </motion.div>
