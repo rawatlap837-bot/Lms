@@ -7,7 +7,7 @@ import { X, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { useFormModal } from "./FormModalContext";
 
 // 👇 paste your Apps Script deployment URL here
-const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxz9AP610mPYjVkBTBP5f0ju2Q4YFBrTvRPSZOaY3IXkk_Xz-zRuuLL1A2KqRuPPDwf/exec";
+const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxLJS5OkHXk_f0ic8pUIp184yzQh2kFZK9Wd3b_A_JcJigJQKW0K4L5vKgGvgksHmpL/exec";
 
 type Status = "idle" | "submitting" | "success" | "error";
 type FormState = { name: string; phone: string; email: string; bestTimeToCall: string; message: string };
