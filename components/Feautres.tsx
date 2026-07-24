@@ -76,7 +76,7 @@ function Reveal({
       ref={ref}
       className={[
         "transition-[opacity,transform] duration-700 ease-out motion-reduce:transition-none",
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6",
+        visible ? "opacity-100 translate-y-0" : "opacity-0",
         className,
       ].join(" ")}
     >
@@ -99,7 +99,7 @@ function Card({
   return (
     <div
       className={[
-        "group/card relative rounded-3xl p-7 md:p-8 transition-all duration-300",
+        "group/card relative rounded-3xl p-5 md:p-8 transition-all duration-300",
         span === "2" ? "md:col-span-2" : span === "3" ? "md:col-span-3" : "",
         dark
           ? "bg-gradient-to-br from-ink to-[#1a0f26] border border-white/[0.06] shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)]"
@@ -137,7 +137,7 @@ function Badge({
 
 function MockFrame({ children }: { children: ReactNode }) {
   return (
-    <div className="mt-6 rounded-2xl bg-mist/10 border border-ink/[0.05] p-4 overflow-hidden">
+    <div className="mt-4 md:mt-6 rounded-2xl bg-mist/10 border border-ink/[0.05] p-3 md:p-4 overflow-hidden">
       {children}
     </div>
   );
@@ -336,11 +336,11 @@ export default function Features() {
         </Reveal>
 
         {/* Row 1 — three equal mockup cards */}
-        <div className="mt-14 grid md:grid-cols-3 gap-5">
+        <div className="mt-8 md:mt-14 grid md:grid-cols-3 gap-4 md:gap-5">
           <Reveal delay={0}>
             <Card>
               <Badge icon={Users} tone="indigo" />
-              <h3 className="font-display text-lg text-ink mt-5">
+              <h3 className="font-display text-lg text-ink mt-4 md:mt-5">
                 Student Management
               </h3>
               <p className="mt-2 text-sm text-ink/55 leading-relaxed">
@@ -356,7 +356,7 @@ export default function Features() {
           <Reveal delay={120}>
             <Card>
               <Badge icon={PlayCircle} tone="vodka" />
-              <h3 className="font-display text-lg text-ink mt-5">
+              <h3 className="font-display text-lg text-ink mt-4 md:mt-5">
                 Course Hosting
               </h3>
               <p className="mt-2 text-sm text-ink/55 leading-relaxed">
@@ -372,7 +372,7 @@ export default function Features() {
           <Reveal delay={240}>
             <Card>
               <Badge icon={CreditCard} tone="mist" />
-              <h3 className="font-display text-lg text-ink mt-5">
+              <h3 className="font-display text-lg text-ink mt-4 md:mt-5">
                 Payment Collection
               </h3>
               <p className="mt-2 text-sm text-ink/55 leading-relaxed">
@@ -387,11 +387,11 @@ export default function Features() {
         </div>
 
         {/* Row 2 — half card + wide card */}
-        <div className="mt-5 grid md:grid-cols-3 gap-5">
+        <div className="mt-4 md:mt-5 grid md:grid-cols-3 gap-4 md:gap-5">
           <Reveal delay={0}>
             <Card>
               <Badge icon={BellRing} tone="vodka" />
-              <h3 className="font-display text-lg text-ink mt-5">
+              <h3 className="font-display text-lg text-ink mt-4 md:mt-5">
                 Auto Reminders
               </h3>
               <p className="mt-2 text-sm text-ink/55 leading-relaxed">
@@ -407,7 +407,7 @@ export default function Features() {
           <Reveal delay={120} className="md:col-span-2">
             <Card span="2">
               <Badge icon={Palette} tone="indigo" />
-              <h3 className="font-display text-lg text-ink mt-5">
+              <h3 className="font-display text-lg text-ink mt-4 md:mt-5">
                 Branded Experience
               </h3>
               <p className="mt-2 text-sm text-ink/55 leading-relaxed max-w-md">
@@ -422,13 +422,13 @@ export default function Features() {
         </div>
 
         {/* Row 3 — dark analytics card, full width */}
-        <div className="mt-5">
+        <div className="mt-4 md:mt-5">
           <Reveal>
             <Card dark span="3">
-              <div className="grid md:grid-cols-2 gap-8 items-center">
+              <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-center">
                 <div>
                   <Badge icon={BarChart3} tone="cream" />
-                  <h3 className="font-display text-lg text-cream mt-5">
+                  <h3 className="font-display text-lg text-cream mt-4 md:mt-5">
                     Reports &amp; Analytics
                   </h3>
                   <p className="mt-2 text-sm text-mist/55 leading-relaxed max-w-sm">
@@ -443,7 +443,7 @@ export default function Features() {
         </div>
 
         {/* CTA */}
-        <div className="mt-14 flex flex-col items-center gap-4">
+        <div className="mt-10 md:mt-14 flex flex-col items-center gap-4">
           <Reveal>
             <button
               onClick={open}

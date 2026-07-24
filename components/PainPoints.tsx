@@ -142,7 +142,7 @@ export default function TheProblem() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-6 text-center font-display text-3xl md:text-5xl text-ink max-w-3xl mx-auto"
+          className="mt-6 text-center font-display text-[1.75rem] md:text-5xl text-ink max-w-3xl mx-auto"
         >
           Still Doing These Tasks Manually Every Day?
         </motion.h2>
@@ -158,7 +158,7 @@ export default function TheProblem() {
           work.
         </motion.p>
 
-        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {painPoints.map(({ icons, title, tag, accent }, i) => {
             const [IconA, IconB] = icons;
             return (

@@ -280,13 +280,6 @@ export default function EcosystemPipeline() {
             )}
           </svg>
 
-          {pathD && (
-            <>
-              <span className="pipeline-comet" style={{ animationDelay: "0s" }} />
-              <span className="pipeline-comet" style={{ animationDelay: "-1.3s" }} />
-              <span className="pipeline-comet" style={{ animationDelay: "-2.6s" }} />
-            </>
-          )}
 
           <div className="flex flex-col gap-4">
             {rows.map((row, rowIndex) => {
@@ -424,22 +417,6 @@ export default function EcosystemPipeline() {
             )}
           </svg>
 
-          {mobilePathD && (
-            <>
-              <span
-                className="mobile-pipeline-comet"
-                style={{ offsetPath: `path("${mobilePathD}")`, animationDelay: "0s" }}
-              />
-              <span
-                className="mobile-pipeline-comet"
-                style={{ offsetPath: `path("${mobilePathD}")`, animationDelay: "-1.3s" }}
-              />
-              <span
-                className="mobile-pipeline-comet"
-                style={{ offsetPath: `path("${mobilePathD}")`, animationDelay: "-2.6s" }}
-              />
-            </>
-          )}
 
           <div className="flex flex-col items-center gap-12">
             {(pipeline as PipelineItem[]).map((step, i) => {

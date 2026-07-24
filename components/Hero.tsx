@@ -298,11 +298,11 @@ export default function Hero() {
             color: "#F1E9FA",
             fontWeight: 600,
           }}
-          className={`font-display  mt-10  text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] sm:leading-[1.05] text-balance transition-all duration-75 will-change-transform ${mounted ? "opacity-100" : "opacity-0"
+          className={`font-display  mt-10  text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1] sm:leading-[1.05] text-balance transition-all duration-75 will-change-transform ${mounted ? "opacity-100" : "opacity-0"
             }`}
         >
           <span style={{ color: "#FFD84D" }}>Automate</span> Entire Coaching
-          With One <br />
+          With One
           <span
             className="relative inline-block text-md sm:text-3xl md:text-4xl lg:text-7xl align-middle"
             style={{ color: "#FFD84D" }}

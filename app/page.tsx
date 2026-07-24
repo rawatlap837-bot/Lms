@@ -3,7 +3,7 @@ import PainPoints from "@/components/PainPoints";
 import EcosystemPipeline from "@/components/EcosystemPipeline";
 import BeforeAfter from "@/components/BeforeAfter";
 import Features from "@/components/Feautres";
-import WhoIsThisFor from "@/components/Whoisthisfor";
+// import WhoIsThisFor from "@/components/Whoisthisfor";
 import SocialProof from "@/components/SocialProof";
 import Process from "@/components/Process";
 import Urgency from "@/components/Urgency";
@@ -17,7 +17,7 @@ export default function Home() {
       <Features />
       <BeforeAfter />
       <EcosystemPipeline />
-      <WhoIsThisFor />
+      {/* <WhoIsThisFor /> */}
       <SocialProof />
       <Process />
       <Urgency />

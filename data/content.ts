@@ -16,11 +16,6 @@ import {
   ShieldCheck,
   Smartphone,
   Globe,
-  Unlock,
-  BellRing,
-  Wallet,
-  Database,
-  Sparkles,
   BookOpenCheck,
   Laptop,
   Award,
@@ -28,6 +23,9 @@ import {
   LineChart,
   Dumbbell,
   Users,
+  UserPlus,
+  UserTie,
+  Compass,
 } from "lucide-react";
 
 /* -------- Pain points section -------- */
@@ -69,16 +67,36 @@ export const beforeAfter = [
 ];
 /* -------- Ecosystem pipeline section -------- */
 export const pipeline = [
-  { icon: Unlock, title: "Instant Course Access", body: "Students get access the moment payment goes through — no manual approval needed." },
-  { icon: BellRing, title: "Automatic Fee Reminders", body: "Reminders go out on their own, so you never have to chase a payment again." },
-  { icon: LayoutDashboard, title: "Personal Login Dashboard", body: "Every student gets their own space to log in and see everything at a glance." },
-  { icon: FolderOpen, title: "Everything in One Place", body: "Recordings, PDFs, and tests live together — no more scattered links." },
-  { icon: TrendingUp, title: "Progress Tracking", body: "Students see their own progress without ever having to ask you." },
-  { icon: Wallet, title: "Real-Time Payment Reports", body: "Know exactly what's been paid, pending, or overdue — as it happens." },
-  { icon: Database, title: "Student Database", body: "Every student's details, organized and searchable in one system." },
-  { icon: ClipboardCheck, title: "Attendance Records", body: "Participation tracked automatically, class after class." },
-  { icon: BarChart3, title: "Course Analytics", body: "See how each course is actually performing, backed by real data." },
-  { icon: Sparkles, title: "Zero WhatsApp Chaos", body: "No more chasing messages, sending files, or repeating the same replies." },
+  {
+    icon: UserPlus,
+    title: "Create Your Account",
+    body: "Students can register or log in to their personal account and access their complete learning journey from one secure place.",
+  },
+  {
+    icon: Compass,
+    title: "Explore & Enroll",
+    body: "Students can explore available courses, choose the right program, and purchase their course directly from the website.",
+  },
+  {
+    icon: PlayCircle,
+    title: "Access Your Learning Hub",
+    body: "Access course videos, study sheets, PDFs, resources, and your personal learning panel anytime with your login.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Track Your Progress",
+    body: "Students can track their learning progress, stay updated with new content, and join live courses and interactive sessions.",
+  },
+  {
+    icon: CreditCard,
+    title: "Renew or Upgrade",
+    body: "Get automatic payment reminders and easily renew your course or upgrade to a better learning plan directly from the website.",
+  },
+  {
+    icon: UserTie,
+    title: "Personalized Coaching",
+    body: "Coaches and trainers can monitor student progress, identify areas for improvement, and provide personalized guidance when needed.",
+  },
 ];
 
 /* -------- Features section -------- */
