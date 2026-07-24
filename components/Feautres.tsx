@@ -152,13 +152,13 @@ function StudentMock() {
     { name: "Rohan Shah", batch: "Batch 04", pct: 95 },
   ];
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-2">
       {rows.map((r) => (
         <div
           key={r.name}
-          className="flex items-center gap-3 bg-white rounded-xl border border-ink/[0.05] px-3 py-2 shadow-[0_1px_2px_rgba(0,0,0,0.03)]"
+          className="flex items-center gap-3 bg-white rounded-xl border border-ink/[0.05] px-2.5 py-1.5 shadow-[0_1px_2px_rgba(0,0,0,0.03)]"
         >
-          <div className="h-7 w-7 rounded-full bg-indigo/15 text-indigo font-display text-xs flex items-center justify-center shrink-0">
+          <div className="h-6 w-6 rounded-full bg-indigo/15 text-indigo font-display text-xs flex items-center justify-center shrink-0">
             {r.name[0]}
           </div>
           <div className="flex-1 min-w-0">
@@ -446,30 +446,30 @@ export default function Features() {
         <div className="mt-14 flex flex-col items-center gap-4">
           <Reveal>
             <button
-            onClick={open}
-            className="group relative inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 sm:px-10 sm:py-5 text-sm sm:text-base font-semibold text-[#F1E9FA] bg-gradient-to-r from-[#5D2E8C] to-[#7B4DB5] shadow-[0_10px_40px_rgba(93,46,140,0.55)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_50px_rgba(93,46,140,0.7)] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B89ADC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1E1C2F]"
-          >
-            <span
-              className="absolute inset-0 rounded-full pointer-events-none cta-pulse"
-              style={{ backgroundColor: "#7B4DB5" }}
-              aria-hidden="true"
-            />
-
-            {/* Shine sweep */}
-            <span
-              className="absolute inset-0 rounded-full pointer-events-none overflow-hidden"
-              aria-hidden="true"
+              onClick={open}
+              className="group relative inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 sm:px-10 sm:py-5 text-sm sm:text-base font-semibold text-[#F1E9FA] bg-gradient-to-r from-[#5D2E8C] to-[#7B4DB5] shadow-[0_10px_40px_rgba(93,46,140,0.55)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_50px_rgba(93,46,140,0.7)] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B89ADC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1E1C2F]"
             >
-              <span className="shine-sweep absolute top-0 left-0 h-full w-1/3 -skew-x-12" />
-            </span>
+              <span
+                className="absolute inset-0 rounded-full pointer-events-none cta-pulse"
+                style={{ backgroundColor: "#7B4DB5" }}
+                aria-hidden="true"
+              />
 
-            <span
-              className="relative font-bold text-lg text-glow"
-            >
-              Book Your Free Demo
-            </span>
-            {/* <ArrowUpRight className="relative h-6 w-6 sm:h-5 sm:w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /> */}
-          </button>
+              {/* Shine sweep */}
+              <span
+                className="absolute inset-0 rounded-full pointer-events-none overflow-hidden"
+                aria-hidden="true"
+              >
+                <span className="shine-sweep absolute top-0 left-0 h-full w-1/3 -skew-x-12" />
+              </span>
+
+              <span
+                className="relative font-bold text-lg text-glow"
+              >
+                Book Your Free Demo
+              </span>
+              {/* <ArrowUpRight className="relative h-6 w-6 sm:h-5 sm:w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /> */}
+            </button>
           </Reveal>
           <Reveal delay={100}>
             <p className="text-xs text-cream/40">
