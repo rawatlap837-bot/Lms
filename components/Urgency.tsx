@@ -87,7 +87,7 @@ export default function ScalingProblem() {
         <Reveal delay={120} className="mt-10 flex items-center justify-center gap-3 md:gap-4 flex-wrap">
           {tools.map(({ icon: Icon, label }, i) => (
             <span key={label} className="flex items-center gap-3 md:gap-4">
-              <span className="inline-flex items-center gap-2 rounded-full border border-mist/15 bg-white/[0.03] px-4 py-2 text-sm text-mist/60">
+              <span className="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-400">
                 <Icon className="h-4 w-4" strokeWidth={1.8} />
                 {label}
               </span>
