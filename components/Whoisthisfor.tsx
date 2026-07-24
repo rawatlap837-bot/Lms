@@ -102,31 +102,41 @@ export default function WhoIsThisFor() {
           </div>
         </Reveal>
 
-        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-5">
           {audience.map(({ icon: Icon, title }, i) => {
             const isLast = i === audience.length - 1;
             return (
               <Reveal
                 key={title}
                 delay={i * 100}
-                className={isLast ? "sm:col-span-2 lg:col-span-4" : ""}
+                className={isLast ? "col-span-2 lg:col-span-4" : ""}
               >
                 <div
-                  className={`group h-full rounded-2xl border p-7 flex flex-col items-start gap-4 transition-all duration-300 ${isLast
-                    ? "bg-gradient-to-r from-plum/[0.06] to-violet/[0.06] border-plum/15 hover:border-plum/30 hover:shadow-[0_16px_40px_-18px_rgba(120,70,160,0.25)]"
-                    : "bg-white border-ink/[0.06] hover:border-plum/30 hover:-translate-y-1 hover:shadow-[0_16px_36px_-16px_rgba(0,0,0,0.14)]"
+                  className={`group h-full rounded-2xl border transition-all duration-300 ${isLast
+                    ? "bg-gradient-to-r from-plum/[0.06] to-violet/[0.06] border-plum/15 hover:border-plum/30 hover:shadow-[0_16px_40px_-18px_rgba(120,70,160,0.25)] p-8 md:p-10 flex flex-col sm:flex-row items-center justify-center gap-5 text-center sm:text-left"
+                    : "bg-white border-ink/[0.06] hover:border-plum/30 hover:-translate-y-1 hover:shadow-[0_16px_36px_-16px_rgba(0,0,0,0.14)] p-7 flex flex-col items-start gap-4"
                     }`}
                 >
                   <div
-                    className="h-11 w-11 rounded-full flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110 shadow-[0_6px_16px_-6px_rgba(120,70,160,0.45)]"
+                    className={`rounded-full flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110 shadow-[0_6px_16px_-6px_rgba(120,70,160,0.45)] ${isLast ? "h-16 w-16" : "h-11 w-11"
+                      }`}
                     style={{
                       background:
                         "radial-gradient(circle at 35% 30%, #D6C1E8 0%, #B89ADC 70%)",
                     }}
                   >
-                    <Icon className="h-5 w-5 text-white" strokeWidth={1.8} />
+                    <Icon
+                      className={isLast ? "h-7 w-7 text-white" : "h-5 w-5 text-white"}
+                      strokeWidth={1.8}
+                    />
                   </div>
-                  <h3 className="font-display text-base md:text-lg text-ink text-balance">
+                  <h3
+                    className={
+                      isLast
+                        ? "font-display text-xl md:text-2xl text-ink text-balance"
+                        : "font-display text-base md:text-lg text-ink text-balance"
+                    }
+                  >
                     {title}
                   </h3>
                 </div>
@@ -140,15 +150,28 @@ export default function WhoIsThisFor() {
         <Reveal delay={audience.length * 100 + 150} className="mt-10 flex justify-center">
           <button
             onClick={open}
-            className="group relative inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 sm:px-10 sm:py-5 text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-[#5D2E8C] to-[#7B4DB5] shadow-[0_10px_40px_rgba(93,46,140,0.35)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_50px_rgba(93,46,140,0.5)] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7B4DB5] focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+            className="group relative inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 sm:px-10 sm:py-5 text-sm sm:text-base font-semibold text-[#F1E9FA] bg-gradient-to-r from-[#5D2E8C] to-[#7B4DB5] shadow-[0_10px_40px_rgba(93,46,140,0.55)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_50px_rgba(93,46,140,0.7)] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B89ADC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1E1C2F]"
           >
             <span
               className="absolute inset-0 rounded-full pointer-events-none cta-pulse"
               style={{ backgroundColor: "#7B4DB5" }}
               aria-hidden="true"
             />
-            <span className="relative">Book Your Free Consultation</span>
-            <ArrowUpRight className="relative h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+
+            {/* Shine sweep */}
+            <span
+              className="absolute inset-0 rounded-full pointer-events-none overflow-hidden"
+              aria-hidden="true"
+            >
+              <span className="shine-sweep absolute top-0 left-0 h-full w-1/3 -skew-x-12" />
+            </span>
+
+            <span
+              className="relative font-bold text-lg text-glow"
+            >
+              Book Your Free Demo
+            </span>
+            {/* <ArrowUpRight className="relative h-6 w-6 sm:h-5 sm:w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /> */}
           </button>
         </Reveal>
       </div>
