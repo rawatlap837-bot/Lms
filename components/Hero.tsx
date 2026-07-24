@@ -209,7 +209,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[#0a0612]">
+    <section className="relative min-h-fit overflow-hidden bg-[#0a0612]">
       <div className="absolute inset-0 w-full h-full">
         <LightPillar
           topColor="#5227FF"
@@ -444,7 +444,7 @@ export default function Hero() {
             />
           </div>
 
-          <div className="mt-6 sm:mt-8 relative">
+          <div className="mt-2 relative">
             <div
               className="absolute -inset-4 rounded-3xl blur-2xl opacity-50 pointer-events-none transition-colors duration-500"
               style={{
