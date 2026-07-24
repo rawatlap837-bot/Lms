@@ -118,7 +118,10 @@ export default function TheProblem() {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="flex justify-center"
         >
-          <span className="text-sm px-4 py-1.5 rounded-full bg-ink text-white">
+          <span
+            className="text-sm px-4 py-1.5 rounded-full text-white"
+            style={{ background: "linear-gradient(to right, #5D2E8C, #7B4DB5)" }}
+          >
             The Problem
           </span>
         </motion.div>

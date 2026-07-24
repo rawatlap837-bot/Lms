@@ -250,7 +250,7 @@ export default function Hero() {
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-10 pt-10 sm:pt-32 md:pt-40 pb-10 md:pb-14 text-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-10 pt-5  sm:pt-32 md:pt-40 pb-10 md:pb-14 text-center">
         <div
           className={`flex flex-wrap items-center justify-center gap-x-2 gap-y-2 mb-6 sm:mb-8 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
             }`}
@@ -274,7 +274,18 @@ export default function Hero() {
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={point.src} alt="" className="h-5 w-5 shrink-0" />
+              <span className="relative inline-flex h-5 w-5 shrink-0 items-center justify-center">
+                <img
+                  src={point.src}
+                  alt=""
+                  className="h-5 w-5 shrink-0 opacity-80"
+                />
+                <span
+                  className="pointer-events-none absolute left-1/2 top-1/2 h-[2px] w-[26px] -translate-x-1/2 -translate-y-1/2 -rotate-45 rounded-full"
+                  style={{ backgroundColor: "#FF3D3D" }}
+                  aria-hidden="true"
+                />
+              </span>
               {point.label}
             </span>
           ))}
@@ -287,15 +298,18 @@ export default function Hero() {
             color: "#F1E9FA",
             fontWeight: 600,
           }}
-          className={`font-display mt-20 text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] sm:leading-[1.05] text-balance transition-all duration-75 will-change-transform ${mounted ? "opacity-100" : "opacity-0"
+          className={`font-display  mt-10  text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] sm:leading-[1.05] text-balance transition-all duration-75 will-change-transform ${mounted ? "opacity-100" : "opacity-0"
             }`}
         >
-          Automate Entire Coaching
+          <span style={{ color: "#FFD84D" }}>Automate</span> Entire Coaching
           With One <br />
-          <span className="relative inline-block text-3xl sm:text-3xl md:text-4xl lg:text-5xl align-middle ">
-            MANAGMENT SYSTEM
+          <span
+            className="relative inline-block text-3xl sm:text-3xl md:text-4xl lg:text-5xl align-middle"
+            style={{ color: "#FFD84D" }}
+          >
+            Managment System
             <svg
-              className="absolute left-0 -bottom-1.5 sm:-bottom-2 w-full overflow-visible"
+              className="absolute left-0 -bottom-1. sm:-bottom-2 w-full overflow-visible"
               height="16"
               viewBox="0 0 300 16"
               preserveAspectRatio="none"
@@ -361,18 +375,10 @@ export default function Hero() {
               style={{ backgroundColor: "#7B4DB5" }}
               aria-hidden="true"
             />
-            <span className="relative">Book Your Free Consultation</span>
+            <span className="relative font-bo">Book Your Free Consultation</span>
             <ArrowUpRight className="relative h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </button>
         </div>
-
-        <p
-          className={`mt-5 font-display italic text-xs sm:text-sm transition-all duration-700 delay-500 ${mounted ? "opacity-100" : "opacity-0"
-            }`}
-          style={{ color: "rgba(227, 227, 227, 0.8)" }}
-        >
-          Custom-built for your workflow. Designed for your growth.
-        </p>
 
         <div className="mt-5 md:mt-5">
           <div className="flex justify-center">
