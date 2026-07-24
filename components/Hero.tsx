@@ -13,6 +13,7 @@ import {
   FileSpreadsheet,
   HardDrive,
 } from "lucide-react";
+import { useFormModal } from "./FormModalContext";
 import TextType from "../Animation/TextType";
 import LightPillar from "../Animation/LightPillar";
 import excel from "../app/ICONS/excel.svg"
@@ -34,12 +35,6 @@ import Anyalitcs from "../app/tabsimage/Anyalitcs.jpeg"
 // 07 Mauve Glow      #D6C1E8
 // 09 Pastel Purple   #F1E9FA
 
-// ---------------------------------------------------------------------------
-// EDIT ME: rename tabs, and point `image` at your screenshots. Drop
-// screenshots in /public/screenshots/ and update the paths. Until a real
-// screenshot exists at that path, the panel shows a placeholder instead of a
-// blank box, so it never looks broken during development.
-// ---------------------------------------------------------------------------
 const TABS = [
   {
     id: "website",
@@ -77,13 +72,10 @@ const TABS = [
     image: Anyalitcs,
   },
 ];
-// Static imports (e.g. `import Courses from "../app/tabsimage/Courses.jpeg"`)
-// resolve to a StaticImageData object, not a plain URL string. This normalizes
-// both cases so every consumer below can just treat `image` as a string.
+
 const getImageSrc = (image: string | { src: string }) =>
   typeof image === "string" ? image : image.src;
-// The scattered tools this platform replaces — shown in the pain-point bar.
-// The scattered tools this platform replaces — shown in the pain-point bar.
+
 const PAIN_POINTS = [
   { id: "whatsapp", label: "", src: whatsapp.src },
   { id: "excel", label: "", src: excel.src },
@@ -91,12 +83,10 @@ const PAIN_POINTS = [
   { id: "drive", label: "", src: drive.src },
 ];
 
-// How long each tab stays active before auto-advancing to the next one.
-// Kept in one place so the pill bar's progress-bar animation duration
-// (see .progress-bar below) can be matched to it exactly.
 const AUTO_ADVANCE_MS = 4000;
 
 export default function Hero() {
+  const { open } = useFormModal();
   const [scale, setScale] = useState(1);
   const [mounted, setMounted] = useState(false);
 
@@ -125,7 +115,6 @@ export default function Hero() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // --- tabs state ---
   const [active, setActive] = useState(TABS[0].id);
   const activeIndex = TABS.findIndex((t) => t.id === active);
   const activeTab = TABS[activeIndex];
@@ -134,9 +123,6 @@ export default function Hero() {
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
   const [imgError, setImgError] = useState(false);
 
-  // Auto-advance timer. Kept in a ref (not state) so starting/restarting it
-  // doesn't itself trigger a re-render, and so a manual click can cleanly
-  // reset the countdown instead of fighting with the running interval.
   const autoAdvanceRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startAutoAdvance = () => {
@@ -154,7 +140,6 @@ export default function Hero() {
     }, AUTO_ADVANCE_MS);
   };
 
-  // Kick off auto-advance on mount; clean up on unmount.
   useEffect(() => {
     startAutoAdvance();
     return () => {
@@ -171,11 +156,6 @@ export default function Hero() {
     const el = tabRefs.current[activeIndex];
     if (el) {
       setIndicator({ left: el.offsetLeft, width: el.offsetWidth });
-      // Keep the active pill visible inside its own horizontally-scrolling
-      // bar only — never scroll the page itself. Using scrollIntoView here
-      // previously dragged the whole viewport back up to the hero section
-      // every time auto-advance changed tabs, even if the person had
-      // scrolled away to read another section.
       const container = el.parentElement;
       if (container) {
         const elLeft = el.offsetLeft;
@@ -203,9 +183,6 @@ export default function Hero() {
     return () => window.removeEventListener("resize", handleResize);
   }, [activeIndex]);
 
-  // Any manual interaction (click or arrow-key nav) resets the auto-advance
-  // countdown, so the tab the person just picked gets its full dwell time
-  // instead of jumping away a moment later.
   const selectTab = (index: number) => {
     const nextIndex = (index + TABS.length) % TABS.length;
     setActive(TABS[nextIndex].id);
@@ -233,7 +210,6 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-screen overflow-hidden bg-[#0a0612]">
-      {/* light pillar background */}
       <div className="absolute inset-0 w-full h-full">
         <LightPillar
           topColor="#5227FF"
@@ -251,7 +227,6 @@ export default function Hero() {
         />
       </div>
 
-      {/* mesh glow layers for depth */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -260,7 +235,6 @@ export default function Hero() {
         }}
       />
 
-      {/* fine grain texture for a premium, non-flat surface */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.05]" aria-hidden="true">
         <filter id="grain">
           <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" />
@@ -269,7 +243,6 @@ export default function Hero() {
         <rect width="100%" height="100%" filter="url(#grain)" />
       </svg>
 
-      {/* fade to next section's background at the bottom */}
       <div
         className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none"
         style={{
@@ -278,7 +251,6 @@ export default function Hero() {
       />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-10 pt-10 sm:pt-32 md:pt-40 pb-10 md:pb-14 text-center">
-        {/* pain-point bar: the scattered tools this platform replaces */}
         <div
           className={`flex flex-wrap items-center justify-center gap-x-2 gap-y-2 mb-6 sm:mb-8 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
             }`}
@@ -308,9 +280,6 @@ export default function Hero() {
           ))}
         </div>
 
-        {/* primary headline — static, states the core promise up front */}
-        {/* primary headline — static, states the core promise up front */}
-        {/* primary headline — static, states the core promise up front */}
         <h1
           style={{
             transform: `scale(${scale})`,
@@ -345,8 +314,6 @@ export default function Hero() {
           </span>
         </h1>
 
-
-        {/* subheadline — the old animated headline, now supporting copy */}
         <div
           className={`mt-4 sm:mt-6 flex flex-col items-center justify-center transition-all duration-700 delay-100 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
             }`}
@@ -385,9 +352,8 @@ export default function Hero() {
           className={`mt-8 flex justify-center transition-all duration-700 delay-200 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
             }`}
         >
-          <a
-            href="#consultation"
-
+          <button
+            onClick={open}
             className="group relative inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 sm:px-10 sm:py-5 text-sm sm:text-base font-semibold text-[#F1E9FA] bg-gradient-to-r from-[#5D2E8C] to-[#7B4DB5] shadow-[0_10px_40px_rgba(93,46,140,0.55)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_50px_rgba(93,46,140,0.7)] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B89ADC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1E1C2F]"
           >
             <span
@@ -397,7 +363,7 @@ export default function Hero() {
             />
             <span className="relative">Book Your Free Consultation</span>
             <ArrowUpRight className="relative h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </a>
+          </button>
         </div>
 
         <p
@@ -408,12 +374,7 @@ export default function Hero() {
           Custom-built for your workflow. Designed for your growth.
         </p>
 
-        {/* ---------------------------------------------------------------- */}
-        {/* Product tabs — auto-advancing carousel of headings, sits inside  */}
-        {/* the hero section, under the CTA                                  */}
-        {/* ---------------------------------------------------------------- */}
         <div className="mt-5 md:mt-5">
-          {/* tab pills with sliding indicator — horizontally scrollable on mobile */}
           <div className="flex justify-center">
             <div
               role="tablist"
@@ -424,7 +385,6 @@ export default function Hero() {
                 border: "1px solid rgba(184,154,220,0.15)",
               }}
             >
-              {/* sliding highlight */}
               <span
                 className="absolute top-1.5 bottom-1.5 rounded-full transition-all duration-300 ease-out"
                 style={{
@@ -467,8 +427,6 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* auto-advance progress indicator — restarts every time the
-              active tab changes, whether by timer or by manual click */}
           <div
             className="mt-2.5 mx-auto h-0.5 w-full max-w-[220px] rounded-full overflow-hidden"
             style={{ backgroundColor: "rgba(184,154,220,0.15)" }}
@@ -480,7 +438,6 @@ export default function Hero() {
             />
           </div>
 
-          {/* framed screenshot panel */}
           <div className="mt-6 sm:mt-8 relative">
             <div
               className="absolute -inset-4 rounded-3xl blur-2xl opacity-50 pointer-events-none transition-colors duration-500"
@@ -499,7 +456,6 @@ export default function Hero() {
                 boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
               }}
             >
-              {/* window chrome */}
               <div
                 className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3"
                 style={{ borderBottom: "1px solid rgba(184,154,220,0.1)" }}
@@ -515,7 +471,6 @@ export default function Hero() {
                 </span>
               </div>
 
-              {/* screenshot, scale+fade on tab change, with a placeholder if missing */}
               <div key={activeTab.id} className="relative aspect-[16/9] panel-in bg-[#1a1224]">
                 {imgError ? (
                   <div

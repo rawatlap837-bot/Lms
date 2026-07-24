@@ -16,8 +16,10 @@ import {
   Clock,
   FileWarning,
   User,
+  ArrowUpRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useFormModal } from "./FormModalContext";
 
 // If you keep copy centrally in "@/data/content" like `services` and
 // `pillars`, move this array there and import it the same way, e.g.
@@ -100,6 +102,8 @@ const fadeUp = {
 };
 
 export default function TheProblem() {
+  const { open } = useFormModal();
+
   return (
     <section className="relative bg-white py-10 md:py-30 overflow-hidden">
       <div className="pointer-events-none absolute -top-24 left-1/4 h-72 w-72 rounded-full bg-[#7bc99a]/15 blur-[100px]" />
@@ -188,37 +192,48 @@ export default function TheProblem() {
         </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-16 rounded-3xl border border-ink/10 bg-ink/[0.02] backdrop-blur-xl p-8 md:p-10"
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-12 flex justify-center"
         >
-          <h3 className="text-center font-display text-2xl md:text-3xl text-ink">
-            The result?
-          </h3>
-          <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            {results.map(({ icon: Icon, label }, i) => (
-              <motion.div
-                key={label}
-                custom={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.3 }}
-                variants={fadeUp}
-                className="flex flex-col items-center text-center gap-3 rounded-2xl border border-ink/10 bg-white p-5"
-              >
-                <span className="h-10 w-10 rounded-xl flex items-center justify-center bg-rose-500/10 ring-1 ring-rose-500/20">
-                  <Icon className="h-5 w-5 text-rose-400" strokeWidth={1.8} />
-                </span>
-                <span className="text-sm text-ink/70 leading-snug">
-                  {label}
-                </span>
-              </motion.div>
-            ))}
-          </div>
+          <button
+            onClick={open}
+            className="group relative inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 sm:px-10 sm:py-5 text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-[#5D2E8C] to-[#7B4DB5] shadow-[0_10px_40px_rgba(93,46,140,0.35)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_50px_rgba(93,46,140,0.5)] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7B4DB5] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+          >
+            <span
+              className="absolute inset-0 rounded-full pointer-events-none cta-pulse"
+              style={{ backgroundColor: "#7B4DB5" }}
+              aria-hidden="true"
+            />
+            <span className="relative">Book Your Free Consultation</span>
+            <ArrowUpRight className="relative h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </button>
         </motion.div>
       </div>
+
+      <style jsx>{`
+        @keyframes ctaPulse {
+          0% {
+            opacity: 0.35;
+            transform: scale(1);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(1.25);
+          }
+        }
+        .cta-pulse {
+          animation: ctaPulse 2s ease-out infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .cta-pulse {
+            animation: none;
+          }
+        }
+      `}</style>
     </section>
   );
 }

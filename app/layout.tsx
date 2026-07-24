@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, IBM_Plex_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import { FormModalProvider } from "../components/FormModalContext";
+import ConsultationForm from "@/components/Form";
 
 const satoshi = localFont({
   src: [
@@ -44,7 +46,10 @@ export default function RootLayout({
       <body
         className={`${satoshi.variable} ${jakarta.variable} ${plexMono.variable} font-body bg-ink antialiased`}
       >
-        {children}
+        <FormModalProvider>
+          {children}
+          <ConsultationForm />
+        </FormModalProvider>
       </body>
     </html>
   );

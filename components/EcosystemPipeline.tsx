@@ -10,11 +10,13 @@ import {
   BarChart3,
   Bell,
   CheckCircle2,
+  ArrowUpRight,
   type LucideIcon,
 } from "lucide-react";
 import Eyebrow from "./Eyebrow";
 import { pipeline } from "@/data/content";
 import { motion, useInView } from "framer-motion";
+import { useFormModal } from "./FormModalContext";
 
 const COLS = 3;
 const BULGE = 170; // outward push at row turns — must clear the widest
@@ -126,6 +128,7 @@ function roundedPath(points: Point[], radius = CORNER_RADIUS) {
 }
 
 export default function EcosystemPipeline() {
+  const { open } = useFormModal();
   const containerRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [pathD, setPathD] = useState("");
@@ -482,6 +485,27 @@ export default function EcosystemPipeline() {
             That&apos;s exactly what our Custom LMS Software does.
           </span>
         </p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-10 flex justify-center md:justify-start"
+        >
+          <button
+            onClick={open}
+            className="group relative inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 sm:px-10 sm:py-5 text-sm sm:text-base font-semibold text-[#F1E9FA] bg-gradient-to-r from-[#5D2E8C] to-[#7B4DB5] shadow-[0_10px_40px_rgba(93,46,140,0.55)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_50px_rgba(93,46,140,0.7)] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B89ADC] focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
+          >
+            <span
+              className="absolute inset-0 rounded-full pointer-events-none cta-pulse"
+              style={{ backgroundColor: "#7B4DB5" }}
+              aria-hidden="true"
+            />
+            <span className="relative">Book Your Free Consultation</span>
+            <ArrowUpRight className="relative h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </button>
+        </motion.div>
       </div>
 
       <style jsx>{`
@@ -549,10 +573,25 @@ export default function EcosystemPipeline() {
           animation: cometMove 4s linear infinite;
         }
 
+        @keyframes ctaPulse {
+          0% {
+            opacity: 0.35;
+            transform: scale(1);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(1.25);
+          }
+        }
+        .cta-pulse {
+          animation: ctaPulse 2s ease-out infinite;
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .pipeline-flow,
           .pipeline-comet,
-          .mobile-pipeline-comet {
+          .mobile-pipeline-comet,
+          .cta-pulse {
             animation: none;
           }
         }

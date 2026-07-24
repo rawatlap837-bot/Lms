@@ -1,11 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, X } from "lucide-react";
+import { Check, X, ArrowUpRight } from "lucide-react";
 import Eyebrow from "./Eyebrow";
 import { beforeAfter } from "@/data/content";
+import { useFormModal } from "./FormModalContext";
 
 export default function BeforeAfter() {
+  const { open } = useFormModal();
+
   return (
     <section className="bg-cream py-10 md:py-32 overflow-hidden">
       <div className="max-w-5xl mx-auto px-6 md:px-10">
@@ -128,11 +131,7 @@ export default function BeforeAfter() {
               </div>
             </motion.div>
 
-            {/* seam column (desktop only) — a real, zero-width grid track
-                sitting exactly on the boundary between the two cards.
-                The medallion is centered against THIS div, not the outer
-                wrapper, so it lands precisely on the seam regardless of
-                the wrapper's own box-sizing/width. */}
+            {/* seam column (desktop only) */}
             <div className="hidden md:block md:col-start-2 relative">
               <motion.div
                 initial={{ opacity: 0, scale: 0.6 }}
@@ -150,7 +149,50 @@ export default function BeforeAfter() {
             </div>
           </div>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-14 flex justify-center"
+        >
+          <button
+            onClick={open}
+            className="group relative inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 sm:px-10 sm:py-5 text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-[#5D2E8C] to-[#7B4DB5] shadow-[0_10px_40px_rgba(93,46,140,0.35)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_50px_rgba(93,46,140,0.5)] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7B4DB5] focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+          >
+            <span
+              className="absolute inset-0 rounded-full pointer-events-none cta-pulse"
+              style={{ backgroundColor: "#7B4DB5" }}
+              aria-hidden="true"
+            />
+            <span className="relative">Book Your Free Consultation</span>
+            <ArrowUpRight className="relative h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </button>
+        </motion.div>
       </div>
+
+      <style jsx>{`
+        @keyframes ctaPulse {
+          0% {
+            opacity: 0.35;
+            transform: scale(1);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(1.25);
+          }
+        }
+        .cta-pulse {
+          animation: ctaPulse 2s ease-out infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .cta-pulse {
+            animation: none;
+          }
+        }
+      `}</style>
     </section>
   );
 }

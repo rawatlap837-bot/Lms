@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { Handshake, LayoutDashboard, Rocket } from "lucide-react";
+import { Handshake, LayoutDashboard, Rocket, ArrowUpRight } from "lucide-react";
 import Eyebrow from "./Eyebrow";
+import { useFormModal } from "./FormModalContext";
 
 const steps = [
   {
@@ -164,6 +165,7 @@ function Callout({ step }: { step: (typeof steps)[number] }) {
 /* ------------------------------- component ------------------------------- */
 
 export default function HowItWorks() {
+  const { open } = useFormModal();
   return (
     <section className="bg-white py-10 md:py-32">
       <div className="max-w-6xl mx-auto px-6 md:px-10">
@@ -250,7 +252,45 @@ export default function HowItWorks() {
             Usually ready within a few working days
           </p>
         </Reveal>
+
+        {/* CTA button */}
+        <Reveal delay={steps.length * 130 + 300} className="mt-8 flex justify-center">
+          <button
+            onClick={open}
+            className="group relative inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 sm:px-10 sm:py-5 text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-[#5D2E8C] to-[#7B4DB5] shadow-[0_10px_40px_rgba(93,46,140,0.35)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_50px_rgba(93,46,140,0.5)] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7B4DB5] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+          >
+            <span
+              className="absolute inset-0 rounded-full pointer-events-none cta-pulse"
+              style={{ backgroundColor: "#7B4DB5" }}
+              aria-hidden="true"
+            />
+            <span className="relative">Book Your Free Consultation</span>
+            <ArrowUpRight className="relative h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </button>
+        </Reveal>
       </div>
+
+      <style jsx>{`
+        @keyframes ctaPulse {
+          0% {
+            opacity: 0.35;
+            transform: scale(1);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(1.25);
+          }
+        }
+        .cta-pulse {
+          animation: ctaPulse 2s ease-out infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .cta-pulse {
+            animation: none;
+          }
+        }
+      `}</style>
     </section>
   );
 }
