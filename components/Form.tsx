@@ -10,11 +10,20 @@ import { useFormModal } from "./FormModalContext";
 const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxz9AP610mPYjVkBTBP5f0ju2Q4YFBrTvRPSZOaY3IXkk_Xz-zRuuLL1A2KqRuPPDwf/exec";
 
 type Status = "idle" | "submitting" | "success" | "error";
-type FormState = { name: string; phone: string; email: string; message: string };
+type FormState = { name: string; phone: string; email: string; bestTimeToCall: string; message: string };
 type FormErrors = Partial<Record<keyof FormState, string>>;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^[+]?[\d\s\-().]{7,15}$/;
+
+// 9 AM – 7 PM, in 2-hour call windows.
+const CALL_TIME_SLOTS = [
+    "9:00 AM - 11:00 AM",
+    "11:00 AM - 1:00 PM",
+    "1:00 PM - 3:00 PM",
+    "3:00 PM - 5:00 PM",
+    "5:00 PM - 7:00 PM",
+];
 
 const inputStyle = {
     backgroundColor: "rgba(43,27,61,0.6)",
@@ -41,13 +50,14 @@ function validate(form: FormState): FormErrors {
     } else if (!EMAIL_RE.test(form.email.trim())) {
         errors.email = "That doesn't look like a valid email.";
     }
+    // bestTimeToCall is optional — no validation.
     return errors;
 }
 
 export default function ConsultationForm() {
     const { isOpen, close } = useFormModal();
     const [status, setStatus] = useState<Status>("idle");
-    const [form, setForm] = useState<FormState>({ name: "", phone: "", email: "", message: "" });
+    const [form, setForm] = useState<FormState>({ name: "", phone: "", email: "", bestTimeToCall: "", message: "" });
     const [errors, setErrors] = useState<FormErrors>({});
     const [touched, setTouched] = useState<Partial<Record<keyof FormState, boolean>>>({});
     const firstFieldRef = useRef<HTMLInputElement>(null);
@@ -74,7 +84,7 @@ export default function ConsultationForm() {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [isOpen, status, close]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
         if (touched[name as keyof FormState]) {
@@ -82,7 +92,7 @@ export default function ConsultationForm() {
         }
     };
 
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name } = e.target;
         setTouched((prev) => ({ ...prev, [name]: true }));
         setErrors(validate(form));
@@ -93,7 +103,7 @@ export default function ConsultationForm() {
 
         const validationErrors = validate(form);
         setErrors(validationErrors);
-        setTouched({ name: true, phone: true, email: true, message: true });
+        setTouched({ name: true, phone: true, email: true, bestTimeToCall: true, message: true });
         if (Object.keys(validationErrors).length > 0) return;
 
         setStatus("submitting");
@@ -108,7 +118,7 @@ export default function ConsultationForm() {
             });
 
             setStatus("success");
-            setForm({ name: "", phone: "", email: "", message: "" });
+            setForm({ name: "", phone: "", email: "", bestTimeToCall: "", message: "" });
             setTouched({});
 
             setTimeout(() => {
@@ -256,6 +266,36 @@ export default function ConsultationForm() {
                                                 {errors.email}
                                             </p>
                                         )}
+                                    </div>
+
+                                    <div>
+                                        <label
+                                            htmlFor="bestTimeToCall"
+                                            className="mb-1.5 block text-xs"
+                                            style={{ color: "rgba(241,233,250,0.6)" }}
+                                        >
+                                            Best time to call (9 AM – 7 PM)
+                                        </label>
+                                        <select
+                                            id="bestTimeToCall"
+                                            name="bestTimeToCall"
+                                            value={form.bestTimeToCall}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            aria-label="Best time to call"
+                                            disabled={status === "submitting"}
+                                            className={fieldClass("bestTimeToCall")}
+                                            style={inputStyle}
+                                        >
+                                            <option value="" style={{ color: "#1E1C2F" }}>
+                                                Select a time slot (optional)
+                                            </option>
+                                            {CALL_TIME_SLOTS.map((slot) => (
+                                                <option key={slot} value={slot} style={{ color: "#1E1C2F" }}>
+                                                    {slot}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
 
                                     <textarea
